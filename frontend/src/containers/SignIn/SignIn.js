@@ -1,0 +1,145 @@
+import { Form, Input, Button, Checkbox, Spin, Alert } from "antd";
+import { useCallback, useMemo, useContext } from "react";
+
+import AuthContext from "contexts/auth";
+import PageHeaderComponent from "components/PageHeader";
+import useRequest from "hooks/useRequest";
+import Wrapper from "./SignIn.styles";
+
+const SignIn = () => {
+  const { dispatch } = useContext(AuthContext);
+  const { post, loading } = useRequest({});
+
+  const [form] = Form.useForm();
+
+  const onFinish = useCallback(
+    async (values) => {
+      const response = await post("/authentication", {
+        email: values.email,
+        password: values.password,
+        strategy: "local",
+      });
+
+      if (response.code) {
+        form.setFieldsValue({ errorMessage: response.message });
+        return;
+      }
+
+      const { accessToken, user } = response;
+      form.setFieldsValue({ successMessage: "Login successfully" });
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("isAuth", true);
+      setTimeout(() => {
+        dispatch({
+          type: "login",
+          payload: { user, accessToken },
+        });
+      }, 200);
+    },
+    [dispatch, form, post]
+  );
+
+  return (
+    <Spin spinning={loading}>
+      <Wrapper>
+        <div>
+          {useMemo(
+            () => (
+              <PageHeaderComponent
+                className="sign-in-title"
+                title="SIGN IN"
+                onBack={null}
+              />
+            ),
+            []
+          )}
+
+          {useMemo(
+            () => (
+              <Form
+                form={form}
+                name="basic"
+                layout="vertical"
+                initialValues={{ remember: true, errorMessage: null }}
+                onFinish={onFinish}
+                onChange={() => form.setFieldsValue({ errorMessage: null })}
+              >
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, curValues) =>
+                    prevValues.errorMessage !== curValues.errorMessage
+                  }
+                >
+                  {({ getFieldValue }) => {
+                    return !!getFieldValue("errorMessage") ? (
+                      <Alert
+                        message={getFieldValue("errorMessage")}
+                        type="error"
+                        showIcon
+                      />
+                    ) : null;
+                  }}
+                </Form.Item>
+
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, curValues) =>
+                    prevValues.successMessage !== curValues.successMessage
+                  }
+                >
+                  {({ getFieldValue }) => {
+                    return !!getFieldValue("successMessage") ? (
+                      <Alert
+                        message={getFieldValue("successMessage")}
+                        type="success"
+                        showIcon
+                      />
+                    ) : null;
+                  }}
+                </Form.Item>
+
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      type: "email",
+                      message: "Please input your valid email!",
+                    },
+                  ]}
+                >
+                  <Input autoFocus />
+                </Form.Item>
+
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    { required: true, message: "Please input your password!" },
+                  ]}
+                >
+                  <Input.Password />
+                </Form.Item>
+
+                <Form.Item name="remember" valuePropName="checked">
+                  <Checkbox>Remember me</Checkbox>
+                </Form.Item>
+
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Login
+                  </Button>
+                </Form.Item>
+              </Form>
+            ),
+            [form, onFinish]
+          )}
+        </div>
+      </Wrapper>
+    </Spin>
+  );
+};
+
+export default SignIn;
