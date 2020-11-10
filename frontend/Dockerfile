@@ -5,17 +5,9 @@ RUN mkdir -p /usr/src/app/frontend
 
 WORKDIR /usr/src/app/frontend
 
-COPY package.json ./
-COPY yarn.lock ./
-
-RUN yarn
-
-COPY . .
+COPY build/ ./build/
 
 RUN yarn global add serve
-
-RUN yarn build
-
 
 EXPOSE 3000
 
