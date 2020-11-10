@@ -12,6 +12,11 @@ RUN yarn
 
 COPY . .
 
+RUN yarn global add serve
+
+RUN yarn build
+
+
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["serve", "-l", "3000", "-s", "build"]

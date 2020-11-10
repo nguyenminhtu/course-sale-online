@@ -8,6 +8,10 @@ export default styled.div`
   justify-content: center;
   align-items: center;
 
+  .ant-page-header {
+    padding-top: 0;
+  }
+
   & > div {
     width: 400px;
     background-color: #fff;
