@@ -1,10 +1,9 @@
-import { Table } from "antd";
+import { Table, notification } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import DeleteButton from "components/DeleteButton";
+import HeaderArea from "components/HeaderArea";
 import EditButton from "components/EditButton";
-import NewButton from "components/NewButton";
 import PageHeader from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./ListPage.styles";
@@ -29,15 +28,21 @@ const ListPage = () => {
   );
 
   const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     const pageQuery = `limit=${10 * page}&skip=${10 * page - 10}`;
-    get(`/categories?${pageQuery}`);
-  }, [get, page]);
+    const searchQuery = query ? `&search=${query}` : "";
+    get(`/categories?${pageQuery}${searchQuery}`);
+  }, [get, page, query]);
 
   const handleDeleteCategory = useCallback(async () => {
     await post("/remove_categories", { selectedIds });
+    notification.success({
+      message: "Delete category successfully",
+      placement: "topRight",
+    });
     setSelectedIds([]);
     setPage(1);
   }, [post, selectedIds]);
@@ -46,24 +51,18 @@ const ListPage = () => {
     <Wrapper>
       <PageHeader title="List category" onBack={null} />
 
-      <div className="button-area">
-        {useMemo(
-          () => (
-            <NewButton path="/admin/categories/new" />
-          ),
-          []
-        )}
-
-        {useMemo(
-          () => (
-            <DeleteButton
-              disabled={!selectedIds.length}
-              onClick={handleDeleteCategory}
-            />
-          ),
-          [handleDeleteCategory, selectedIds.length]
-        )}
-      </div>
+      {useMemo(
+        () => (
+          <HeaderArea
+            searchPlaceHolder="Search category by name"
+            newPath="/admin/categories/new"
+            selectedIds={selectedIds}
+            onDelete={handleDeleteCategory}
+            onSearch={(data) => setQuery(data)}
+          />
+        ),
+        [handleDeleteCategory, selectedIds]
+      )}
 
       {useMemo(
         () => (
@@ -71,19 +70,24 @@ const ListPage = () => {
             rowSelection={{
               type: "checkbox",
               onChange: (data) => setSelectedIds(data),
+              selectedRowKeys: selectedIds,
             }}
             columns={columns}
-            dataSource={response.data.map((item) => ({
-              ...item,
-              key: item._id,
-              action: (
-                <EditButton
-                  onClick={() =>
-                    history.push(`/admin/categories/${item._id}/edit`)
-                  }
-                />
-              ),
-            }))}
+            dataSource={
+              response.code
+                ? []
+                : response.data.map((item) => ({
+                    ...item,
+                    key: item._id,
+                    action: (
+                      <EditButton
+                        onClick={() =>
+                          history.push(`/admin/categories/${item._id}/edit`)
+                        }
+                      />
+                    ),
+                  }))
+            }
             pagination={{
               onChange: (page) => setPage(page),
               pageSize: 10,
@@ -93,7 +97,15 @@ const ListPage = () => {
             loading={loading}
           />
         ),
-        [history, loading, page, response.data, response.total]
+        [
+          history,
+          loading,
+          page,
+          response.code,
+          response.data,
+          response.total,
+          selectedIds,
+        ]
       )}
     </Wrapper>
   );

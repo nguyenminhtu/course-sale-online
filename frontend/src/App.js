@@ -1,19 +1,12 @@
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { AuthProvider } from "contexts/auth";
-import AuthenticatedRoute from "components/AuthenticatedRoute";
-import PublicRoute from "components/PublicRoute";
 
-import { ListRequest } from "domain/admin/Requests";
-import {
-  ListCategory,
-  NewCategory,
-  EditCategory,
-} from "domain/admin/Categories";
-import AdminHomePage from "domain/admin/HomePage";
-import HomePage from "domain/user/HomePage";
 import SignInPage from "containers/SignIn";
-import MainLayout from "domain/admin/layouts/MainLayout";
+
+import AdminRoutes from "routes/AdminRoutes";
+import PublicRoute from "routes/PublicRoute";
+import UserRoutes from "routes/UserRoutes";
 
 function App() {
   return (
@@ -22,35 +15,13 @@ function App() {
         <Switch>
           <PublicRoute exact path="/sign_in" component={SignInPage} />
 
-          <MainLayout>
-            <AuthenticatedRoute exact path="/admin" component={AdminHomePage} />
+          <Route exact path="/">
+            <UserRoutes />
+          </Route>
 
-            <AuthenticatedRoute
-              exact
-              path="/admin/requests"
-              component={ListRequest}
-            />
-
-            <AuthenticatedRoute
-              exact
-              path="/admin/categories"
-              component={ListCategory}
-            />
-
-            <AuthenticatedRoute
-              exact
-              path="/admin/categories/new"
-              component={NewCategory}
-            />
-
-            <AuthenticatedRoute
-              exact
-              path="/admin/categories/:categoryId/edit"
-              component={EditCategory}
-            />
-
-            <AuthenticatedRoute exact path="/" component={HomePage} />
-          </MainLayout>
+          <Route path="/admin">
+            <AdminRoutes />
+          </Route>
         </Switch>
       </Router>
     </AuthProvider>

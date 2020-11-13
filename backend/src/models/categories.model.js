@@ -1,19 +1,24 @@
-// categories-model.js - A mongoose model
-//
-// See http://mongoosejs.com/docs/models.html
-// for more of what you can do here.
-module.exports = function(app) {
+const createCourseModel = require("./courses.model");
+
+module.exports = function (app) {
   const modelName = "categories";
   const mongooseClient = app.get("mongooseClient");
   const { Schema } = mongooseClient;
   const schema = new Schema(
     {
-      name: { type: String, required: true }
+      name: { type: String, required: true },
     },
     {
-      timestamps: true
+      timestamps: true,
     }
   );
+
+  // cascade delete
+  schema.pre("deleteMany", async function (next) {
+    const query = this.getQuery()["_id"];
+    await createCourseModel(app).deleteMany({ category: query });
+    next();
+  });
 
   // This is necessary to avoid model compilation errors in watch mode
   // see https://mongoosejs.com/docs/api/connection.html#connection_Connection-deleteModel

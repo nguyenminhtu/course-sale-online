@@ -43,11 +43,11 @@ const MainLayout = ({ children }) => {
             </Menu.Item>
 
             <Menu.Item key="course" icon={<BookOutlined />}>
-              Courses
+              <Link to="/admin/courses">Courses</Link>
             </Menu.Item>
 
             <Menu.Item key="user" icon={<UserOutlined />}>
-              Users
+              <Link to="/admin/users">Users</Link>
             </Menu.Item>
 
             <Menu.Item key="video" icon={<VideoCameraOutlined />}>

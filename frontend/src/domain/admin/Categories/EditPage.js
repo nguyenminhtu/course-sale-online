@@ -1,4 +1,4 @@
-import { Form, Input, Button, Spin } from "antd";
+import { Form, Input, Button, Spin, Row, Col, notification } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -16,6 +16,10 @@ const EditPage = () => {
     async (data) => {
       const patchResponse = await patch(`/categories/${categoryId}`, data);
       if (patchResponse._id) {
+        notification.success({
+          message: "Update category successfully",
+          placement: "topRight",
+        });
         history.push("/admin/categories");
       }
     },
@@ -47,35 +51,39 @@ const EditPage = () => {
 
         {useMemo(
           () => (
-            <Form layout="vertical" form={form} onFinish={onFinish}>
-              {!response._id && <p>Category not found</p>}
+            <Row>
+              <Col span={10} offset={7}>
+                <Form layout="vertical" form={form} onFinish={onFinish}>
+                  {response.code && <p>Category not found</p>}
 
-              {response._id && (
-                <>
-                  <Form.Item
-                    label="Category name"
-                    name="name"
-                    tooltip={{
-                      title: "This is a required field",
-                      icon: <InfoCircleOutlined />,
-                    }}
-                    rules={[
-                      { required: true, message: "This field is required" },
-                    ]}
-                  >
-                    <Input autoFocus />
-                  </Form.Item>
+                  {response._id && (
+                    <>
+                      <Form.Item
+                        label="Category name"
+                        name="name"
+                        tooltip={{
+                          title: "This is a required field",
+                          icon: <InfoCircleOutlined />,
+                        }}
+                        rules={[
+                          { required: true, message: "This field is required" },
+                        ]}
+                      >
+                        <Input autoFocus />
+                      </Form.Item>
 
-                  <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                      Update
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Update
+                        </Button>
+                      </Form.Item>
+                    </>
+                  )}
+                </Form>
+              </Col>
+            </Row>
           ),
-          [form, onFinish, response._id]
+          [form, onFinish, response._id, response.code]
         )}
       </Wrapper>
     </Spin>

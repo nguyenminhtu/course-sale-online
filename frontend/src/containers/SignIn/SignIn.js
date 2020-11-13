@@ -25,17 +25,21 @@ const SignIn = () => {
         return;
       }
 
+      const storage = values.remember ? localStorage : sessionStorage;
+
       const { accessToken, user } = response;
+
       form.setFieldsValue({ successMessage: "Login successfully" });
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("isAuth", true);
+      storage.setItem("accessToken", accessToken);
+      storage.setItem("user", JSON.stringify(user));
+      storage.setItem("isAuth", true);
+
       setTimeout(() => {
         dispatch({
           type: "login",
           payload: { user, accessToken },
         });
-      }, 200);
+      }, 300);
     },
     [dispatch, form, post]
   );
@@ -61,7 +65,7 @@ const SignIn = () => {
                 form={form}
                 name="basic"
                 layout="vertical"
-                initialValues={{ remember: true, errorMessage: null }}
+                initialValues={{ errorMessage: null }}
                 onFinish={onFinish}
                 onChange={() => form.setFieldsValue({ errorMessage: null })}
               >

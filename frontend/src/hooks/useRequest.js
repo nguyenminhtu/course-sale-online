@@ -4,7 +4,7 @@ import useFetch from "use-http";
 import AuthContext from "contexts/auth";
 
 const useRequest = ({ optionParams = {} }) => {
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken, dispatch } = useContext(AuthContext);
 
   const { get, post, patch, del, loading, error, data } = useFetch(
     process.env.REACT_APP_API_URL,
@@ -19,6 +19,13 @@ const useRequest = ({ optionParams = {} }) => {
             Authorization: `Bearer ${accessToken}`,
           },
         }),
+        response: ({ response }) => {
+          if (!!accessToken && response.status === 401) {
+            dispatch({ type: "logout" });
+            return;
+          }
+          return response;
+        },
       },
     }
   );

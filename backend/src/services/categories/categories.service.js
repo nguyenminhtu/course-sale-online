@@ -9,6 +9,7 @@ module.exports = function (app) {
   const options = {
     Model: categoryModel,
     paginate: app.get("paginate"),
+    whitelist: ["$regex", "$options", "$sort"],
   };
 
   // Initialize our service with any options it requires

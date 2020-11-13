@@ -2,7 +2,7 @@
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
-module.exports = function(app) {
+module.exports = function (app) {
   const modelName = "requests";
   const mongooseClient = app.get("mongooseClient");
   const { Schema } = mongooseClient;
@@ -10,20 +10,21 @@ module.exports = function(app) {
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: "users",
       },
       course: {
         type: Schema.Types.ObjectId,
-        ref: "courses"
+        ref: "courses",
       },
       status: {
         type: String,
         enum: ["waiting", "approved", "rejected"],
-        default: "waiting"
-      }
+        default: "waiting",
+      },
+      note: { type: String },
     },
     {
-      timestamps: true
+      timestamps: true,
     }
   );
 

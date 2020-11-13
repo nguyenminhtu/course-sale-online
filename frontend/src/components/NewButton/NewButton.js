@@ -2,9 +2,9 @@ import { Button } from "antd";
 import { Link } from "react-router-dom";
 import { PlusCircleOutlined } from "@ant-design/icons";
 
-const EditButton = ({ path }) => {
+const NewButton = ({ path }) => {
   return (
-    <Link to={path} className="new-category">
+    <Link to={path}>
       <Button type="primary" icon={<PlusCircleOutlined />}>
         New
       </Button>
@@ -12,4 +12,4 @@ const EditButton = ({ path }) => {
   );
 };
 
-export default EditButton;
+export default NewButton;

@@ -1,5 +1,21 @@
-const { Service } = require('feathers-mongoose');
+const { Service } = require("feathers-mongoose");
 
 exports.Users = class Users extends Service {
-  
+  async find(params) {
+    const queryParams = { $sort: { createdAt: -1 } };
+
+    Object.keys(params.query).forEach((key) => {
+      if (key === "search") {
+        queryParams["username"] = {
+          $regex: params.query[key],
+          $options: "ig",
+        };
+        return;
+      }
+
+      queryParams[`$${key}`] = params.query[key];
+    });
+
+    return super.find({ query: queryParams });
+  }
 };
