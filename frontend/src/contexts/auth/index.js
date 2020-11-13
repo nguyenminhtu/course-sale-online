@@ -1,10 +1,16 @@
 import React, { createContext, useReducer } from "react";
 
 const initialStates = {
-  isAuth: localStorage.getItem("isAuth") || false,
-  accessToken: localStorage.getItem("accessToken") || null,
+  isAuth:
+    localStorage.getItem("isAuth") || sessionStorage.getItem("isAuth") || false,
+  accessToken:
+    localStorage.getItem("accessToken") ||
+    sessionStorage.getItem("accessToken") ||
+    null,
   user: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
+    : sessionStorage.getItem("user")
+    ? JSON.parse(sessionStorage.getItem("user"))
     : null,
 };
 
@@ -22,6 +28,7 @@ export const AuthProvider = ({ children }) => {
 
       case "logout":
         localStorage.clear();
+        sessionStorage.clear();
         return { isAuth: false, accessToken: null, user: {} };
 
       default: {
