@@ -21,7 +21,10 @@ module.exports = function (app) {
     await courseModel.deleteMany({ _id: { $in: selectedIds } });
 
     const total = await courseModel.countDocuments({});
-    const data = await courseModel.find({}).populate("category");
+    const data = await courseModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .populate("category");
 
     res.json({ total, data });
   });

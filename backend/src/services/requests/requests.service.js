@@ -21,7 +21,10 @@ module.exports = function (app) {
     await requestModel.deleteMany({ _id: { $in: selectedIds } });
 
     const total = await requestModel.countDocuments({});
-    const data = await requestModel.find({}).populate(["user", "course"]);
+    const data = await requestModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .populate(["user", "course"]);
 
     res.json({ total, data });
   });
@@ -35,7 +38,10 @@ module.exports = function (app) {
     );
 
     const total = await requestModel.countDocuments({});
-    const data = await requestModel.find({}).populate(["user", "course"]);
+    const data = await requestModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .populate(["user", "course"]);
 
     res.json({ total, data });
   });

@@ -50,8 +50,8 @@ const MainLayout = ({ children }) => {
               <Link to="/admin/users">Users</Link>
             </Menu.Item>
 
-            <Menu.Item key="video" icon={<VideoCameraOutlined />}>
-              Videos
+            <Menu.Item key="lesson" icon={<VideoCameraOutlined />}>
+              <Link to="/admin/lessons">Lessons</Link>
             </Menu.Item>
 
             <Menu.Item key="exam" icon={<FileOutlined />}>

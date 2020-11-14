@@ -2,7 +2,7 @@
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
-module.exports = function(app) {
+module.exports = function (app) {
   const modelName = "lessons";
   const mongooseClient = app.get("mongooseClient");
   const { Schema } = mongooseClient;
@@ -11,15 +11,13 @@ module.exports = function(app) {
       name: { type: String, required: true },
       course: {
         type: Schema.Types.ObjectId,
-        ref: "courses"
+        ref: "courses",
       },
-      video: {
-        type: Schema.Types.ObjectId,
-        ref: "videos"
-      }
+      video: { type: String },
+      isFinish: { type: Boolean, default: false },
     },
     {
-      timestamps: true
+      timestamps: true,
     }
   );
 
@@ -28,5 +26,6 @@ module.exports = function(app) {
   if (mongooseClient.modelNames().includes(modelName)) {
     mongooseClient.deleteModel(modelName);
   }
+
   return mongooseClient.model(modelName, schema);
 };

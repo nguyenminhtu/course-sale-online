@@ -21,7 +21,7 @@ module.exports = function (app) {
     await categoryModel.deleteMany({ _id: { $in: selectedIds } });
 
     const total = await categoryModel.countDocuments({});
-    const data = await categoryModel.find({});
+    const data = await categoryModel.find({}).sort({ createdAt: -1 });
 
     res.json({ total, data });
   });
