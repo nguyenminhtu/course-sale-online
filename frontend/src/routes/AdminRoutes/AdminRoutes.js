@@ -11,13 +11,19 @@ import {
   NewCategory,
   EditCategory,
 } from "domain/admin/Categories";
+import { ListExam, NewExam, EditExam } from "domain/admin/Exams";
+import {
+  ListQuestion,
+  NewQuestion,
+  EditQuestion,
+} from "domain/admin/Questions";
 import AdminHomePage from "domain/admin/HomePage";
-import MainLayout from "domain/admin/layouts/MainLayout";
+import AdminLayout from "layouts/AdminLayout";
 
 function App() {
   return (
     <Switch>
-      <MainLayout>
+      <AdminLayout>
         <AuthenticatedRoute exact path="/admin" component={AdminHomePage} />
 
         <AuthenticatedRoute
@@ -74,6 +80,30 @@ function App() {
           component={EditCourse}
         />
 
+        <AuthenticatedRoute
+          exact
+          path="/admin/questions"
+          component={ListQuestion}
+        />
+        <AuthenticatedRoute
+          exact
+          path="/admin/questions/new"
+          component={NewQuestion}
+        />
+        <AuthenticatedRoute
+          exact
+          path="/admin/questions/:questionId/edit"
+          component={EditQuestion}
+        />
+
+        <AuthenticatedRoute exact path="/admin/exams" component={ListExam} />
+        <AuthenticatedRoute exact path="/admin/exams/new" component={NewExam} />
+        <AuthenticatedRoute
+          exact
+          path="/admin/exams/:examId/edit"
+          component={EditExam}
+        />
+
         <AuthenticatedRoute exact path="/admin/users" component={ListUser} />
         <AuthenticatedRoute exact path="/admin/users/new" component={NewUser} />
         <AuthenticatedRoute
@@ -81,7 +111,7 @@ function App() {
           path="/admin/users/:userId/edit"
           component={EditUser}
         />
-      </MainLayout>
+      </AdminLayout>
     </Switch>
   );
 }

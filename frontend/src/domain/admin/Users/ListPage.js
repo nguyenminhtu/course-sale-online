@@ -80,7 +80,12 @@ const ListPage = () => {
 
   return (
     <Wrapper>
-      <PageHeader title="List user" onBack={null} />
+      {useMemo(
+        () => (
+          <PageHeader title="List user" onBack={null} />
+        ),
+        []
+      )}
 
       {useMemo(
         () => (

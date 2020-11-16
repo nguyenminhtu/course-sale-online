@@ -65,15 +65,25 @@ const ListPage = () => {
 
   return (
     <Wrapper>
-      <PageHeader title="List course" onBack={null} />
+      {useMemo(
+        () => (
+          <PageHeader title="List course" onBack={null} />
+        ),
+        []
+      )}
 
-      <HeaderArea
-        newPath="/admin/courses/new"
-        searchPlaceHolder="Search course by name"
-        selectedIds={selectedIds}
-        onDelete={handleDeleteCourse}
-        onSearch={(text) => setQuery(text)}
-      />
+      {useMemo(
+        () => (
+          <HeaderArea
+            newPath="/admin/courses/new"
+            searchPlaceHolder="Search course by name"
+            selectedIds={selectedIds}
+            onDelete={handleDeleteCourse}
+            onSearch={(text) => setQuery(text)}
+          />
+        ),
+        [handleDeleteCourse, selectedIds]
+      )}
 
       {useMemo(
         () => (

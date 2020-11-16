@@ -2,16 +2,27 @@
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
-module.exports = function(app) {
+module.exports = function (app) {
   const modelName = "exams";
   const mongooseClient = app.get("mongooseClient");
   const { Schema } = mongooseClient;
   const schema = new Schema(
     {
-      name: { type: String, required: true }
+      name: { type: String, required: true },
+      course: {
+        type: Schema.Types.ObjectId,
+        ref: "courses",
+      },
+      questions: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "questions",
+        },
+      ],
+      isFinish: { type: Boolean, default: false },
     },
     {
-      timestamps: true
+      timestamps: true,
     }
   );
 
@@ -20,5 +31,6 @@ module.exports = function(app) {
   if (mongooseClient.modelNames().includes(modelName)) {
     mongooseClient.deleteModel(modelName);
   }
+
   return mongooseClient.model(modelName, schema);
 };

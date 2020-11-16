@@ -1,4 +1,6 @@
+const createExamModel = require("./exams.model");
 const createLessonModel = require("./lessons.model");
+const createQuestionModel = require("./questions.model");
 const createRequestModel = require("./requests.model");
 
 module.exports = function (app) {
@@ -23,7 +25,9 @@ module.exports = function (app) {
   // cascade delete
   schema.pre("deleteMany", async function (next) {
     const query = this.getQuery()["_id"];
+    await createExamModel(app).deleteMany({ course: query });
     await createLessonModel(app).deleteMany({ course: query });
+    await createQuestionModel(app).deleteMany({ course: query });
     await createRequestModel(app).deleteMany({ course: query });
     next();
   });

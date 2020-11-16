@@ -10,9 +10,17 @@ import Wrapper from "./ListPage.styles";
 
 const columns = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: "Title",
+    dataIndex: "title",
+    key: "title",
+  },
+  {
+    title: "Course",
+    dataIndex: "course",
+    key: "course",
+    render: (_, record) => {
+      return record.course.name;
+    },
   },
   {
     title: "Action",
@@ -34,13 +42,13 @@ const ListPage = () => {
   useEffect(() => {
     const pageQuery = `limit=${10 * page}&skip=${10 * page - 10}`;
     const searchQuery = query ? `&search=${query}` : "";
-    get(`/categories?${pageQuery}${searchQuery}`);
+    get(`/questions?${pageQuery}${searchQuery}`);
   }, [get, page, query]);
 
-  const handleDeleteCategory = useCallback(async () => {
-    await post("/remove_categories", { selectedIds });
+  const handleDeleteQuestion = useCallback(async () => {
+    await post("/remove_questions", { selectedIds });
     notification.success({
-      message: "Delete category successfully",
+      message: "Delete question successfully",
       placement: "topRight",
     });
     setSelectedIds([]);
@@ -51,7 +59,7 @@ const ListPage = () => {
     <Wrapper>
       {useMemo(
         () => (
-          <PageHeader title="List category" onBack={null} />
+          <PageHeader title="List question" onBack={null} />
         ),
         []
       )}
@@ -59,14 +67,14 @@ const ListPage = () => {
       {useMemo(
         () => (
           <HeaderArea
-            searchPlaceHolder="Search category by name"
-            newPath="/admin/categories/new"
+            searchPlaceHolder="Search question by title"
+            newPath="/admin/questions/new"
             selectedIds={selectedIds}
-            onDelete={handleDeleteCategory}
+            onDelete={handleDeleteQuestion}
             onSearch={(data) => setQuery(data)}
           />
         ),
-        [handleDeleteCategory, selectedIds]
+        [handleDeleteQuestion, selectedIds]
       )}
 
       {useMemo(
@@ -87,7 +95,7 @@ const ListPage = () => {
                     action: (
                       <EditButton
                         onClick={() =>
-                          history.push(`/admin/categories/${item._id}/edit`)
+                          history.push(`/admin/questions/${item._id}/edit`)
                         }
                       />
                     ),

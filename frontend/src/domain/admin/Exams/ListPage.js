@@ -15,6 +15,22 @@ const columns = [
     key: "name",
   },
   {
+    title: "Course",
+    dataIndex: "course",
+    key: "course",
+    render: (_, record) => {
+      return record.course.name;
+    },
+  },
+  {
+    title: "Is finish",
+    dataIndex: "isFinish",
+    key: "isFinish",
+    render: (_, record) => {
+      return record.isFinish ? "Finshed" : "Not yet";
+    },
+  },
+  {
     title: "Action",
     dataIndex: "action",
     key: "action",
@@ -34,13 +50,13 @@ const ListPage = () => {
   useEffect(() => {
     const pageQuery = `limit=${10 * page}&skip=${10 * page - 10}`;
     const searchQuery = query ? `&search=${query}` : "";
-    get(`/categories?${pageQuery}${searchQuery}`);
+    get(`/exams?${pageQuery}${searchQuery}`);
   }, [get, page, query]);
 
-  const handleDeleteCategory = useCallback(async () => {
-    await post("/remove_categories", { selectedIds });
+  const handleDeleteExam = useCallback(async () => {
+    await post("/remove_exams", { selectedIds });
     notification.success({
-      message: "Delete category successfully",
+      message: "Delete exam successfully",
       placement: "topRight",
     });
     setSelectedIds([]);
@@ -51,7 +67,7 @@ const ListPage = () => {
     <Wrapper>
       {useMemo(
         () => (
-          <PageHeader title="List category" onBack={null} />
+          <PageHeader title="List exam" onBack={null} />
         ),
         []
       )}
@@ -59,14 +75,14 @@ const ListPage = () => {
       {useMemo(
         () => (
           <HeaderArea
-            searchPlaceHolder="Search category by name"
-            newPath="/admin/categories/new"
+            searchPlaceHolder="Search exam by name"
+            newPath="/admin/exams/new"
             selectedIds={selectedIds}
-            onDelete={handleDeleteCategory}
+            onDelete={handleDeleteExam}
             onSearch={(data) => setQuery(data)}
           />
         ),
-        [handleDeleteCategory, selectedIds]
+        [handleDeleteExam, selectedIds]
       )}
 
       {useMemo(
@@ -87,7 +103,7 @@ const ListPage = () => {
                     action: (
                       <EditButton
                         onClick={() =>
-                          history.push(`/admin/categories/${item._id}/edit`)
+                          history.push(`/admin/exams/${item._id}/edit`)
                         }
                       />
                     ),

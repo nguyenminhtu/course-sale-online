@@ -72,47 +72,57 @@ const ListPage = () => {
 
   return (
     <Wrapper>
-      <PageHeader title="List request" onBack={null} />
+      {useMemo(
+        () => (
+          <PageHeader title="List request" onBack={null} />
+        ),
+        []
+      )}
 
-      <HeaderArea
-        selectedIds={selectedIds}
-        onDelete={null}
-        searchPlaceHolder="Search request by user name or course name"
-        customButtonArea={
-          <div className="button-area">
-            <Button
-              icon={<CheckOutlined style={{ color: "#52c41a" }} />}
-              disabled={!selectedIds.length}
-              type="ghost"
-              style={{
-                backgroundColor: "#f6ffed",
-                border: "1px solid #b7eb8f",
-              }}
-              onClick={() => handleProcessRequest("approve")}
-            >
-              Approve
-            </Button>
+      {useMemo(
+        () => (
+          <HeaderArea
+            selectedIds={selectedIds}
+            onDelete={null}
+            searchPlaceHolder="Search request by user name or course name"
+            customButtonArea={
+              <div className="button-area">
+                <Button
+                  icon={<CheckOutlined style={{ color: "#52c41a" }} />}
+                  disabled={!selectedIds.length}
+                  type="ghost"
+                  style={{
+                    backgroundColor: "#f6ffed",
+                    border: "1px solid #b7eb8f",
+                  }}
+                  onClick={() => handleProcessRequest("approve")}
+                >
+                  Approve
+                </Button>
 
-            <Button
-              icon={<CloseOutlined style={{ color: "#ff4d4f" }} />}
-              disabled={!selectedIds.length}
-              onClick={() => handleProcessRequest("reject")}
-              type="ghost"
-              style={{
-                backgroundColor: "#fff2f0",
-                border: "1px solid #ffccc7",
-              }}
-            >
-              Reject
-            </Button>
+                <Button
+                  icon={<CloseOutlined style={{ color: "#ff4d4f" }} />}
+                  disabled={!selectedIds.length}
+                  onClick={() => handleProcessRequest("reject")}
+                  type="ghost"
+                  style={{
+                    backgroundColor: "#fff2f0",
+                    border: "1px solid #ffccc7",
+                  }}
+                >
+                  Reject
+                </Button>
 
-            <DeleteButton
-              disabled={!selectedIds.length}
-              onClick={handleDeleteRequest}
-            />
-          </div>
-        }
-      />
+                <DeleteButton
+                  disabled={!selectedIds.length}
+                  onClick={handleDeleteRequest}
+                />
+              </div>
+            }
+          />
+        ),
+        [handleDeleteRequest, handleProcessRequest, selectedIds]
+      )}
 
       {useMemo(
         () => (

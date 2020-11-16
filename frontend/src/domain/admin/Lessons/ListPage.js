@@ -65,7 +65,12 @@ const ListPage = () => {
 
   return (
     <Wrapper>
-      <PageHeader title="List lesson" onBack={null} />
+      {useMemo(
+        () => (
+          <PageHeader title="List lesson" onBack={null} />
+        ),
+        []
+      )}
 
       {useMemo(
         () => (

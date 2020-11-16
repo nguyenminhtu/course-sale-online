@@ -2,24 +2,17 @@ import { useState, useContext } from "react";
 import { Layout, Menu, Avatar, Dropdown } from "antd";
 import {
   UserOutlined,
-  VideoCameraOutlined,
-  AlertOutlined,
-  BookOutlined,
-  FileOutlined,
-  QuestionCircleOutlined,
-  CheckCircleOutlined,
   SelectOutlined,
   LogoutOutlined,
-  BarsOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 
 import AuthContext from "contexts/auth";
-import Wrapper from "./MainLayout.styles";
+import MenuItem from "./MenuItem";
+import Wrapper from "./AdminLayout.styles";
 
 const { Header, Content, Sider } = Layout;
 
-const MainLayout = ({ children }) => {
+const AdminLayout = ({ children }) => {
   const { dispatch } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -33,39 +26,7 @@ const MainLayout = ({ children }) => {
         <Sider collapsible collapsed={collapsed} onCollapse={toggle}>
           <div className="logo">SALE COURSES</div>
 
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={[]}>
-            <Menu.Item key="category" icon={<BarsOutlined />}>
-              <Link to="/admin/categories">Categories</Link>
-            </Menu.Item>
-
-            <Menu.Item key="request" icon={<AlertOutlined />}>
-              <Link to="/admin/requests">Requests</Link>
-            </Menu.Item>
-
-            <Menu.Item key="course" icon={<BookOutlined />}>
-              <Link to="/admin/courses">Courses</Link>
-            </Menu.Item>
-
-            <Menu.Item key="user" icon={<UserOutlined />}>
-              <Link to="/admin/users">Users</Link>
-            </Menu.Item>
-
-            <Menu.Item key="lesson" icon={<VideoCameraOutlined />}>
-              <Link to="/admin/lessons">Lessons</Link>
-            </Menu.Item>
-
-            <Menu.Item key="exam" icon={<FileOutlined />}>
-              Exams
-            </Menu.Item>
-
-            <Menu.Item key="question" icon={<QuestionCircleOutlined />}>
-              Questions
-            </Menu.Item>
-
-            <Menu.Item key="answer" icon={<CheckCircleOutlined />}>
-              Answers
-            </Menu.Item>
-          </Menu>
+          <MenuItem />
         </Sider>
 
         <Layout className="site-layout">
@@ -101,4 +62,4 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default AdminLayout;
