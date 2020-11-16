@@ -21,4 +21,15 @@ exports.Exams = class Exams extends Service {
 
     return super.find({ query: queryParams });
   }
+
+  async get(id, params) {
+    const queryParams = {
+      $populate: "questions",
+    };
+
+    return super.get(id, {
+      ...params,
+      query: { ...queryParams, ...params.query },
+    });
+  }
 };

@@ -7,15 +7,11 @@ import {
   Col,
   notification,
   Select,
-  Space,
-  Radio,
+  AutoComplete,
+  List,
 } from "antd";
-import {
-  InfoCircleOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-import { useCallback, useEffect, useMemo } from "react";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import PageHeaderComponent from "components/PageHeader";
@@ -25,12 +21,47 @@ import Wrapper from "./NewPage.styles";
 const { Option } = Select;
 
 const NewPage = () => {
+  const [courses, setCourses] = useState([]);
+  const [questionOptions, setQuestionOptions] = useState([]);
+  const [questionList, setQuestionList] = useState([]);
+
   const history = useHistory();
-  const { get, post, loading, response = {} } = useRequest({});
+  const { get, post, loading, response = { data: [] } } = useRequest({});
+
+  const onSearch = useCallback(
+    (searchValue) => {
+      if (!searchValue) {
+        return;
+      }
+
+      const newOptions = response.data
+        .filter(
+          (question) =>
+            question.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
+        )
+        .map((question) => ({ value: question.title, id: question._id }));
+      setQuestionOptions(newOptions);
+    },
+    [response.data]
+  );
+
+  const onSelectQuestion = useCallback(
+    (_, option) => {
+      const newQuestionList = [
+        ...questionList.filter((question) => question.id !== option.id),
+        option,
+      ];
+      setQuestionList(newQuestionList);
+    },
+    [questionList]
+  );
 
   const onFinish = useCallback(
     async (data) => {
-      const postResponse = await post("/exams", data);
+      const postResponse = await post("/exams", {
+        ...data,
+        questions: questionList.map((question) => question.id),
+      });
 
       if (postResponse._id) {
         notification.success({
@@ -40,13 +71,18 @@ const NewPage = () => {
         history.replace("/admin/exams");
       }
     },
-    [history, post]
+    [history, post, questionList]
   );
 
-  const [form] = Form.useForm();
-
   useEffect(() => {
-    get("/courses");
+    const getData = async () => {
+      const courseResponse = await get("/courses");
+      setCourses(courseResponse.data);
+
+      get("/questions?limit=1000&skip=0");
+    };
+
+    getData();
   }, [get]);
 
   return (
@@ -59,14 +95,14 @@ const NewPage = () => {
           []
         )}
 
-        {useMemo(
-          () => (
-            <Row>
-              <Col span={10} offset={7}>
-                <Form layout="vertical" form={form} onFinish={onFinish}>
+        <Row>
+          <Col span={10} offset={7}>
+            <Form layout="vertical" onFinish={onFinish}>
+              {useMemo(
+                () => (
                   <Form.Item
-                    label="Title"
-                    name="title"
+                    label="Name"
+                    name="name"
                     tooltip={{
                       title: "This is a required field",
                       icon: <InfoCircleOutlined />,
@@ -77,10 +113,15 @@ const NewPage = () => {
                   >
                     <Input autoFocus />
                   </Form.Item>
+                ),
+                []
+              )}
 
+              {useMemo(
+                () => (
                   <Form.Item
-                    name="course"
                     label="Course"
+                    name="course"
                     tooltip={{
                       title: "This is a required field",
                       icon: <InfoCircleOutlined />,
@@ -90,99 +131,55 @@ const NewPage = () => {
                     ]}
                   >
                     <Select placeholder="Select a course" allowClear>
-                      {response.data &&
-                        response.data.map((course) => (
-                          <Option key={course._id} value={course._id}>
-                            {course.name}
-                          </Option>
-                        ))}
+                      {courses.map((course) => (
+                        <Option key={course._id} value={course._id}>
+                          {course.name}
+                        </Option>
+                      ))}
                     </Select>
                   </Form.Item>
+                ),
+                [courses]
+              )}
 
-                  <Form.List name="answers">
-                    {(fields, { add, remove }) => (
-                      <>
-                        {fields.map((field) => (
-                          <Space key={field.key} align="baseline">
-                            <Form.Item
-                              noStyle
-                              shouldUpdate={(prevValues, curValues) =>
-                                prevValues.area !== curValues.area ||
-                                prevValues.answers !== curValues.answers
-                              }
-                            >
-                              {() => (
-                                <Form.Item
-                                  {...field}
-                                  label="Content"
-                                  name={[field.name, "content"]}
-                                  fieldKey={[field.fieldKey, "content"]}
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Missing content",
-                                    },
-                                  ]}
-                                >
-                                  <Input placeholder="For Ex: A. or 1." />
-                                </Form.Item>
-                              )}
-                            </Form.Item>
+              {useMemo(
+                () => (
+                  <Form.Item label="Questions">
+                    <AutoComplete
+                      options={questionOptions}
+                      style={{
+                        width: "100%",
+                      }}
+                      onSelect={onSelectQuestion}
+                      onSearch={onSearch}
+                      placeholder="Autocomplete search question to add"
+                      onClear={() => setQuestionOptions([])}
+                      allowClear
+                    />
 
-                            <Form.Item
-                              {...field}
-                              label="Value"
-                              name={[field.name, "value"]}
-                              fieldKey={[field.fieldKey, "value"]}
-                              rules={[
-                                { required: true, message: "Missing value" },
-                              ]}
-                            >
-                              <Input />
-                            </Form.Item>
+                    <List
+                      bordered
+                      dataSource={questionList}
+                      renderItem={(item) => <List.Item>{item.value}</List.Item>}
+                    />
+                  </Form.Item>
+                ),
+                [onSearch, onSelectQuestion, questionList, questionOptions]
+              )}
 
-                            <Form.Item
-                              {...field}
-                              label="Is True"
-                              name={[field.name, "isTrue"]}
-                              fieldKey={[field.fieldKey, "isTrue"]}
-                            >
-                              <Radio.Group>
-                                <Radio value={true}>Yes</Radio>
-                              </Radio.Group>
-                            </Form.Item>
-
-                            <MinusCircleOutlined
-                              onClick={() => remove(field.name)}
-                            />
-                          </Space>
-                        ))}
-
-                        <Form.Item>
-                          <Button
-                            type="dashed"
-                            onClick={() => add()}
-                            block
-                            icon={<PlusOutlined />}
-                          >
-                            Add answers
-                          </Button>
-                        </Form.Item>
-                      </>
-                    )}
-                  </Form.List>
-
+              {useMemo(
+                () => (
                   <Form.Item>
                     <Button type="primary" htmlType="submit">
                       Create
                     </Button>
                   </Form.Item>
-                </Form>
-              </Col>
-            </Row>
-          ),
-          [form, onFinish, response.data]
-        )}
+                ),
+                []
+              )}
+            </Form>
+          </Col>
+        </Row>
       </Wrapper>
     </Spin>
   );

@@ -9,6 +9,7 @@ module.exports = function (app) {
   const options = {
     Model: examVideo,
     paginate: app.get("paginate"),
+    whitelist: ["$populate", "$regex", "$options", "$sort"],
   };
 
   // Initialize our service with any options it requires
