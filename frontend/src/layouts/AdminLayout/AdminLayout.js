@@ -1,5 +1,6 @@
-import { useState, useContext } from "react";
 import { Layout, Menu, Avatar, Dropdown } from "antd";
+import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
 import {
   UserOutlined,
   SelectOutlined,
@@ -24,7 +25,9 @@ const AdminLayout = ({ children }) => {
     <Wrapper>
       <Layout>
         <Sider collapsible collapsed={collapsed} onCollapse={toggle}>
-          <div className="logo">SALE COURSES</div>
+          <div className="logo">
+            <Link to="/admin">NKH</Link>
+          </div>
 
           <MenuItem />
         </Sider>
