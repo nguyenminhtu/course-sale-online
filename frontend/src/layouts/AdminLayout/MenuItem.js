@@ -7,6 +7,7 @@ import {
   FileOutlined,
   QuestionCircleOutlined,
   BarsOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -39,6 +40,10 @@ const MenuItem = () => {
 
       <Menu.Item key="question" icon={<QuestionCircleOutlined />}>
         <Link to="/admin/questions">Questions</Link>
+      </Menu.Item>
+
+      <Menu.Item key="reviews" icon={<FormOutlined />}>
+        <Link to="/admin/reviews">Reviews</Link>
       </Menu.Item>
     </Menu>
   );

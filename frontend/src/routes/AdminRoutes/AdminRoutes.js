@@ -3,6 +3,7 @@ import { Switch } from "react-router-dom";
 import AuthenticatedRoute from "routes/AuthenticatedRoute";
 
 import { ListCourse, NewCourse, EditCourse } from "domain/admin/Courses";
+import { ListExam, NewExam, EditExam } from "domain/admin/Exams";
 import { ListLesson, NewLesson, EditLesson } from "domain/admin/Lessons";
 import { ListRequest } from "domain/admin/Requests";
 import { ListUser, NewUser, EditUser } from "domain/admin/Users";
@@ -11,12 +12,12 @@ import {
   NewCategory,
   EditCategory,
 } from "domain/admin/Categories";
-import { ListExam, NewExam, EditExam } from "domain/admin/Exams";
 import {
   ListQuestion,
   NewQuestion,
   EditQuestion,
 } from "domain/admin/Questions";
+import { ListReview } from "domain/admin/Reviews";
 import AdminHomePage from "domain/admin/HomePage";
 import AdminLayout from "layouts/AdminLayout";
 
@@ -102,6 +103,12 @@ function App() {
           exact
           path="/admin/exams/:examId/edit"
           component={EditExam}
+        />
+
+        <AuthenticatedRoute
+          exact
+          path="/admin/reviews"
+          component={ListReview}
         />
 
         <AuthenticatedRoute exact path="/admin/users" component={ListUser} />

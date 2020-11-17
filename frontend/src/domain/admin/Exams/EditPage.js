@@ -10,7 +10,7 @@ import {
   AutoComplete,
   List,
 } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -53,6 +53,16 @@ const EditPage = () => {
       const newQuestionList = [
         ...questionList.filter((question) => question.id !== option.id),
         option,
+      ];
+      setQuestionList(newQuestionList);
+    },
+    [questionList]
+  );
+
+  const onRemoveQuestion = useCallback(
+    (questionId) => {
+      const newQuestionList = [
+        ...questionList.filter((question) => question.id !== questionId),
       ];
       setQuestionList(newQuestionList);
     },
@@ -116,7 +126,7 @@ const EditPage = () => {
       <Wrapper>
         {useMemo(
           () => (
-            <PageHeaderComponent title="New exam" />
+            <PageHeaderComponent title="Edit exam" />
           ),
           []
         )}
@@ -199,7 +209,16 @@ const EditPage = () => {
                           bordered
                           dataSource={questionList}
                           renderItem={(item) => (
-                            <List.Item>{item.value}</List.Item>
+                            <List.Item
+                              actions={[
+                                <MinusCircleOutlined
+                                  style={{ color: "#856404" }}
+                                  onClick={() => onRemoveQuestion(item.id)}
+                                />,
+                              ]}
+                            >
+                              {item.value}
+                            </List.Item>
                           )}
                         />
                       </Form.Item>
@@ -207,6 +226,7 @@ const EditPage = () => {
                   </>
                 ),
                 [
+                  onRemoveQuestion,
                   onSearch,
                   onSelectQuestion,
                   questionList,

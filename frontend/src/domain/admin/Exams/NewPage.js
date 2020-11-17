@@ -10,7 +10,7 @@ import {
   AutoComplete,
   List,
 } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -31,6 +31,7 @@ const NewPage = () => {
   const onSearch = useCallback(
     (searchValue) => {
       if (!searchValue) {
+        setQuestionOptions([]);
         return;
       }
 
@@ -50,6 +51,16 @@ const NewPage = () => {
       const newQuestionList = [
         ...questionList.filter((question) => question.id !== option.id),
         option,
+      ];
+      setQuestionList(newQuestionList);
+    },
+    [questionList]
+  );
+
+  const onRemoveQuestion = useCallback(
+    (questionId) => {
+      const newQuestionList = [
+        ...questionList.filter((question) => question.id !== questionId),
       ];
       setQuestionList(newQuestionList);
     },
@@ -153,18 +164,34 @@ const NewPage = () => {
                       onSelect={onSelectQuestion}
                       onSearch={onSearch}
                       placeholder="Autocomplete search question to add"
-                      onClear={() => setQuestionOptions([])}
                       allowClear
                     />
 
                     <List
                       bordered
                       dataSource={questionList}
-                      renderItem={(item) => <List.Item>{item.value}</List.Item>}
+                      renderItem={(item) => (
+                        <List.Item
+                          actions={[
+                            <MinusCircleOutlined
+                              style={{ color: "#856404" }}
+                              onClick={() => onRemoveQuestion(item.id)}
+                            />,
+                          ]}
+                        >
+                          {item.value}
+                        </List.Item>
+                      )}
                     />
                   </Form.Item>
                 ),
-                [onSearch, onSelectQuestion, questionList, questionOptions]
+                [
+                  onRemoveQuestion,
+                  onSearch,
+                  onSelectQuestion,
+                  questionList,
+                  questionOptions,
+                ]
               )}
 
               {useMemo(
