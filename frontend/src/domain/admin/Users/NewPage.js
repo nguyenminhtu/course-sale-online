@@ -71,24 +71,6 @@ const NewPage = () => {
                   </Form.Item>
 
                   <Form.Item
-                    label="Email"
-                    name="email"
-                    tooltip={{
-                      title: "This is a required field",
-                      icon: <InfoCircleOutlined />,
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        type: "email",
-                        message: "Please input your valid email!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item
                     label="Password"
                     name="password"
                     tooltip={{
@@ -116,7 +98,7 @@ const NewPage = () => {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item label="Sex" name="sex">
+                  <Form.Item label="Gender" name="gender">
                     <Select>
                       <Option key="0" value={0}>
                         Male

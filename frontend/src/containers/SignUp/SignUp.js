@@ -1,13 +1,13 @@
-import { Form, Input, Button, Checkbox, Spin, Alert } from "antd";
+import { Form, Input, Button, DatePicker, Spin, Alert, Radio } from "antd";
 import { Link } from "react-router-dom";
 import { useCallback, useMemo, useContext } from "react";
 
 import AuthContext from "contexts/auth";
 import PageHeaderComponent from "components/PageHeader";
 import useRequest from "hooks/useRequest";
-import Wrapper from "./SignIn.styles";
+import Wrapper from "./SignUp.styles";
 
-const SignIn = () => {
+const SignUp = () => {
   const { dispatch } = useContext(AuthContext);
   const { post, loading } = useRequest({});
 
@@ -15,25 +15,30 @@ const SignIn = () => {
 
   const onFinish = useCallback(
     async (values) => {
-      const response = await post("/authentication", {
+      const responseCreateUser = await post("/users", values);
+
+      if (responseCreateUser.code) {
+        form.setFieldsValue({ errorMessage: responseCreateUser.message });
+        return;
+      }
+
+      const responseLogin = await post("/authentication", {
         username: values.username,
         password: values.password,
         strategy: "local",
       });
 
-      if (response.code) {
-        form.setFieldsValue({ errorMessage: response.message });
+      if (responseLogin.code) {
+        form.setFieldsValue({ errorMessage: responseLogin.message });
         return;
       }
 
-      const storage = values.remember ? localStorage : sessionStorage;
-
-      const { accessToken, user } = response;
+      const { accessToken, user } = responseLogin;
 
       form.setFieldsValue({ successMessage: "Login successfully" });
-      storage.setItem("accessToken", accessToken);
-      storage.setItem("user", JSON.stringify(user));
-      storage.setItem("isAuth", true);
+      sessionStorage.setItem("accessToken", accessToken);
+      sessionStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.setItem("isAuth", true);
 
       setTimeout(() => {
         dispatch({
@@ -53,7 +58,7 @@ const SignIn = () => {
             () => (
               <PageHeaderComponent
                 className="sign-in-title"
-                title="SIGN IN"
+                title="SIGN UP"
                 onBack={null}
               />
             ),
@@ -127,19 +132,35 @@ const SignIn = () => {
                   <Input.Password />
                 </Form.Item>
 
-                <Form.Item name="remember" valuePropName="checked">
-                  <Checkbox>Remember me</Checkbox>
+                <Form.Item label="Gender" name="gender">
+                  <Radio.Group>
+                    <Radio value={0}>Male</Radio>
+                    <Radio value={1}>Female</Radio>
+                    <Radio value={2}>Other</Radio>
+                  </Radio.Group>
+                </Form.Item>
+
+                <Form.Item label="Birthday" name="dob">
+                  <DatePicker
+                    placeholder=""
+                    style={{ width: "100%" }}
+                    format="DD/MM/YYYY"
+                  />
+                </Form.Item>
+
+                <Form.Item label="Phone" name="phone">
+                  <Input />
                 </Form.Item>
 
                 <Form.Item className="button-area">
-                  <Link to="/sign_up">
+                  <Link to="/sign_in">
                     <Button type="link" htmlType="button">
-                      Go to sign up
+                      Go to sign in
                     </Button>
                   </Link>
 
                   <Button type="primary" htmlType="submit">
-                    Sign me in
+                    Sign me up
                   </Button>
                 </Form.Item>
               </Form>
@@ -152,4 +173,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;

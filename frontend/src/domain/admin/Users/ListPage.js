@@ -15,11 +15,6 @@ const columns = [
     key: "username",
   },
   {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
-  },
-  {
     title: "Role",
     dataIndex: "role",
     key: "role",
@@ -33,11 +28,15 @@ const columns = [
     key: "dob",
   },
   {
-    title: "Sex",
-    dataIndex: "sex",
-    key: "sex",
+    title: "Gender",
+    dataIndex: "gender",
+    key: "gender",
     render: (_, record) => {
-      return record.sex === 0 ? "Male" : record.sex === 1 ? "Female" : "Other";
+      return record.gender === 0
+        ? "Male"
+        : record.gender === 1
+        ? "Female"
+        : "Other";
     },
   },
   {

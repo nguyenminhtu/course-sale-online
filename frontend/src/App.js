@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { AuthProvider } from "contexts/auth";
 
 import SignInPage from "containers/SignIn";
+import SignUpPage from "containers/SignUp";
 
 import AdminRoutes from "routes/AdminRoutes";
 import PublicRoute from "routes/PublicRoute";
@@ -14,6 +15,8 @@ function App() {
       <Router>
         <Switch>
           <PublicRoute exact path="/sign_in" component={SignInPage} />
+
+          <PublicRoute exact path="/sign_up" component={SignUpPage} />
 
           <Route exact path="/">
             <UserRoutes />

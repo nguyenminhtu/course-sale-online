@@ -139,7 +139,7 @@ const ListPage = () => {
                 : response.data.map((item) => ({
                     ...item,
                     key: item._id,
-                    user: item.user && item.user.email,
+                    user: item.user && item.user.username,
                     course: item.course && item.course.name,
                     note: <p className="note-column">{item.note}</p>,
                     status:
