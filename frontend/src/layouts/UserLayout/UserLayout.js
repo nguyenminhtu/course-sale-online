@@ -47,7 +47,7 @@ const UserLayout = ({ children }) => {
             <Link to="/sign_in">
               <Button
                 icon={<LoginOutlined />}
-                type="primary"
+                type="ghost"
                 className="signin-button"
               >
                 Sign In

@@ -19,6 +19,7 @@ export default styled.div`
     .ant-input-search {
       margin-right: 32px;
       height: 35px;
+      width: 70%;
 
       .ant-input-affix-wrapper,
       .ant-input-group-addon {
@@ -37,6 +38,7 @@ export default styled.div`
 
     .signin-button {
       margin-right: 16px;
+      color: #fff;
     }
   }
 `;
