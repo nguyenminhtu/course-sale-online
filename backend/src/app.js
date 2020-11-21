@@ -29,7 +29,6 @@ app.use(
     contentSecurityPolicy: false,
   })
 );
-app.options("*", cors());
 app.use(cors());
 app.use(compress());
 app.use(express.json());
