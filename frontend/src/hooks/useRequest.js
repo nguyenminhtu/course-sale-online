@@ -19,8 +19,15 @@ const useRequest = ({ optionParams = {} }) => {
                 ...options.headers,
                 Authorization: `Bearer ${accessToken}`,
                 "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods":
+                  "OPTIONS,GET,PUT,POST,PATCH,DELETE",
               }
-            : { ...options.headers, "Access-Control-Allow-Origin": "*" },
+            : {
+                ...options.headers,
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods":
+                  "OPTIONS,GET,PUT,POST,PATCH,DELETE",
+              },
         }),
         response: ({ response }) => {
           if (!!accessToken && response.status === 401) {
