@@ -29,7 +29,12 @@ app.use(
     contentSecurityPolicy: false,
   })
 );
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://nkh1798.info",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  })
+);
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
