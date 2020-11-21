@@ -17,8 +17,8 @@ const HomePage = () => {
   const [tabKey, setTabKey] = useState("");
 
   useEffect(() => {
-    const queryByCategory = tabKey ? `categoryId=${tabKey}` : "";
-    get(`/user-homes?${queryByCategory}`);
+    const queryByCategory = tabKey ? `?categoryId=${tabKey}` : "";
+    get(`/user-homes${queryByCategory}`);
   }, [get, tabKey]);
 
   return (
