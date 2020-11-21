@@ -1,6 +1,5 @@
 const { Service } = require("feathers-mongoose");
 const fs = require("fs");
-const createLessonModel = require("../../models/lessons.model");
 
 exports.Lessons = class Lessons extends Service {
   async find(params) {
@@ -24,7 +23,7 @@ exports.Lessons = class Lessons extends Service {
   async create(data, params) {
     const lessonParam = {
       ...data,
-      video: `/uploads/${params.video.filename}`,
+      video: `/uploads/video/${params.video.filename}`,
     };
     return super.create(lessonParam);
   }
@@ -42,7 +41,7 @@ exports.Lessons = class Lessons extends Service {
       } catch {}
 
       delete lessonParam.oldVideo;
-      lessonParam.video = `/uploads/${params.video.filename}`;
+      lessonParam.video = `/uploads/video/${params.video.filename}`;
     }
 
     return super.patch(id, lessonParam);

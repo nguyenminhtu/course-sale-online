@@ -16,6 +16,8 @@ module.exports = function (app) {
         ref: "categories",
       },
       price: { type: String },
+      purchaseNumber: { type: Number, default: 0 },
+      cover: { type: String },
     },
     {
       timestamps: true,

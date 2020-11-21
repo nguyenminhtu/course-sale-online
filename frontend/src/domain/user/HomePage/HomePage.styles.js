@@ -1,42 +1,46 @@
 import styled from "styled-components";
 
 export default styled.div`
-  padding: 0 16px;
+  padding: 16px 16px 24px 16px;
 
   .category-content {
     width: 100%;
+  }
 
-    .slick-slide {
-      padding: 16px;
-      max-height: 400px;
-      min-height: 400px;
+  .ant-divider {
+    color: #001529;
+    font-size: 24px;
+  }
 
-      .course-item {
-        max-height: 384px;
-        min-height: 384px;
+  .nkh {
+    margin-top: 40px !important;
+  }
 
-        .ant-card-body {
-          white-space: pre-wrap;
-          overflow-y: auto;
-          max-height: calc(400px - 48px - 58px);
-          min-height: calc(400px - 48px - 58px);
-        }
-      }
+  .introduce {
+    background-color: #eee;
+    color: #001529;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 150px;
+    padding: 24px 0;
+
+    h1 {
+      color: #001529;
     }
 
-    .prev-button-slider,
-    .right-button-slider {
-      position: absolute;
-      top: 53%;
-      z-index: 1;
+    h1,
+    p {
+      margin-bottom: 0;
     }
 
-    .prev-button-slider {
-      left: -8px;
-    }
-
-    .right-button-slider {
-      right: -8px;
+    .statistic {
+      display: flex;
+      width: 60%;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 `;

@@ -1,4 +1,4 @@
-import { Table, notification } from "antd";
+import { Table, notification, Image } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -8,7 +8,27 @@ import PageHeader from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./ListPage.styles";
 
+import DefaultCourseImage from "assets/images/default-course.png";
+
 const columns = [
+  {
+    title: "Cover",
+    dataIndex: "cover",
+    key: "cover",
+    render: (_, record) => {
+      return (
+        <Image
+          width={100}
+          height={100}
+          src={
+            record.cover
+              ? `${process.env.REACT_APP_API_URL}${record.cover}`
+              : DefaultCourseImage
+          }
+        />
+      );
+    },
+  },
   {
     title: "Name",
     dataIndex: "name",

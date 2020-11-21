@@ -5,13 +5,13 @@ const { Lessons } = require("./lessons.class");
 const createModel = require("../../models/lessons.model");
 const hooks = require("./lessons.hooks");
 
-if (!fs.existsSync(process.env.PWD + "/public/uploads")) {
-  fs.mkdirSync(process.env.PWD + "/public/uploads");
+if (!fs.existsSync(process.env.PWD + "/public/uploads/video")) {
+  fs.mkdirSync(process.env.PWD + "/public/uploads/video");
 }
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) =>
-    cb(null, process.env.PWD + "/public/uploads"), // where the files are being stored
+    cb(null, process.env.PWD + "/public/uploads/video"), // where the files are being stored
   filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`), // getting the file name
 });
 

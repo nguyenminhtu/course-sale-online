@@ -10,29 +10,54 @@ export default styled.div`
     justify-content: space-between;
     align-items: center;
 
+    .user-info {
+      display: flex;
+      align-items: center;
+
+      .shopping-cart-item {
+        color: #fff;
+        font-size: 30px;
+        margin-right: 32px;
+        cursor: pointer;
+      }
+    }
+
     .logo {
       font-size: 30px;
       color: #fff;
       margin-right: 32px;
+      cursor: pointer;
+
+      a {
+        color: #fff;
+
+        &:hover {
+          color: #fff;
+        }
+      }
     }
 
-    .ant-input-search {
-      margin-right: 32px;
-      height: 35px;
-      width: 70%;
+    .ant-select-auto-complete {
+      width: 60%;
 
-      .ant-input-affix-wrapper,
-      .ant-input-group-addon {
-        padding: 0;
-      }
-
-      input {
+      .ant-input-search {
+        margin-right: 32px;
         height: 35px;
-        padding-left: 11px;
-      }
+        width: 100%;
 
-      .ant-btn {
-        height: 37px;
+        .ant-input-affix-wrapper,
+        .ant-input-group-addon {
+          padding: 0;
+        }
+
+        input {
+          height: 35px;
+          padding-left: 11px;
+        }
+
+        .ant-btn {
+          height: 35px;
+        }
       }
     }
 

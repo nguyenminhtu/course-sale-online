@@ -5,9 +5,13 @@ import { AuthProvider } from "contexts/auth";
 import SignInPage from "containers/SignIn";
 import SignUpPage from "containers/SignUp";
 
-import AdminRoutes from "routes/AdminRoutes";
+import UserHomePage from "domain/user/HomePage";
+import CourseDetailPage from "domain/user/CourseDetail";
+
+import UserLayout from "layouts/UserLayout";
+
 import PublicRoute from "routes/PublicRoute";
-import UserRoutes from "routes/UserRoutes";
+import AdminRoutes from "routes/AdminRoutes";
 
 function App() {
   return (
@@ -18,13 +22,19 @@ function App() {
 
           <PublicRoute exact path="/sign_up" component={SignUpPage} />
 
-          <Route exact path="/">
-            <UserRoutes />
-          </Route>
-
           <Route path="/admin">
             <AdminRoutes />
           </Route>
+
+          <UserLayout>
+            <Route exact path="/">
+              <UserHomePage />
+            </Route>
+
+            <Route path="/courses/:courseId">
+              <CourseDetailPage />
+            </Route>
+          </UserLayout>
         </Switch>
       </Router>
     </AuthProvider>

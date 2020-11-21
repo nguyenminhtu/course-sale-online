@@ -1,5 +1,4 @@
 const adminHomes = require("./admin_homes/admin_homes.service.js");
-const answers = require("./answers/answers.service.js");
 const categories = require("./categories/categories.service.js");
 const courses = require("./courses/courses.service.js");
 const exams = require("./exams/exams.service.js");
@@ -13,7 +12,6 @@ const users = require("./users/users.service.js");
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
   app.configure(adminHomes);
-  app.configure(answers);
   app.configure(categories);
   app.configure(courses);
   app.configure(exams);

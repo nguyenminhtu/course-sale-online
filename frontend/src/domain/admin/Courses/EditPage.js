@@ -7,8 +7,10 @@ import {
   Row,
   Col,
   notification,
+  Upload,
+  Image,
 } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -16,11 +18,13 @@ import PageHeader from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./NewPage.styles";
 
+import DefaultCourseImage from "assets/images/default-course.png";
+
 const { Option } = Select;
 const { TextArea } = Input;
 
 const EditPage = () => {
-  const { categoryId } = useParams();
+  const { courseId } = useParams();
   const { get, patch, loading, response = {} } = useRequest({});
   const history = useHistory();
 
@@ -28,7 +32,25 @@ const EditPage = () => {
 
   const onFinish = useCallback(
     async (data) => {
-      const patchResponse = await patch(`/courses/${categoryId}`, data);
+      let formData = {
+        name: data.name,
+        category: data.category,
+        price: data.price,
+        description: data.description,
+      };
+
+      if (typeof data.cover !== "string") {
+        formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("category", data.category);
+        formData.append("price", data.price);
+        formData.append("description", data.description);
+        formData.append("cover", data.cover.file);
+        formData.append("oldCover", response.cover);
+      }
+
+      const patchResponse = await patch(`/courses/${courseId}`, formData);
+
       if (patchResponse._id) {
         notification.success({
           message: "Update course successfully",
@@ -37,7 +59,7 @@ const EditPage = () => {
         history.push("/admin/courses");
       }
     },
-    [categoryId, history, patch]
+    [courseId, history, patch, response.cover]
   );
 
   const [form] = Form.useForm();
@@ -47,19 +69,20 @@ const EditPage = () => {
       const categoriesResponse = await get("/categories");
       setCategories(categoriesResponse.data);
 
-      if (categoryId) {
-        const getResponse = await get(`/courses/${categoryId}`);
+      if (courseId) {
+        const getResponse = await get(`/courses/${courseId}`);
         form.setFieldsValue({
           name: getResponse.name,
           category: getResponse.category,
           description: getResponse.description,
           price: getResponse.price,
+          cover: getResponse.cover,
         });
       }
     };
 
     getCourseInfo();
-  }, [categoryId, form, get]);
+  }, [courseId, form, get]);
 
   return (
     <Spin spinning={loading}>
@@ -129,6 +152,42 @@ const EditPage = () => {
                       </Form.Item>
 
                       <Form.Item
+                        label="Cover photo"
+                        name="cover"
+                        tooltip={{
+                          title: "This is a required field",
+                          icon: <InfoCircleOutlined />,
+                        }}
+                        rules={[
+                          { required: true, message: "This field is required" },
+                        ]}
+                        valuePropName="cover"
+                      >
+                        <Upload
+                          className="upload-wrapper"
+                          beforeUpload={() => false}
+                          accept="image/png, image/jpg, image/jpeg"
+                          listType="picture"
+                        >
+                          <Button icon={<UploadOutlined />}>
+                            Upload cover photo
+                          </Button>
+                        </Upload>
+                      </Form.Item>
+
+                      <Form.Item noStyle shouldUpdate={false}>
+                        <Image
+                          width="100%"
+                          height={300}
+                          src={
+                            response.cover
+                              ? `${process.env.REACT_APP_API_URL}${response.cover}`
+                              : DefaultCourseImage
+                          }
+                        />
+                      </Form.Item>
+
+                      <Form.Item
                         label="Description"
                         name="description"
                         tooltip={{
@@ -153,7 +212,14 @@ const EditPage = () => {
               </Col>
             </Row>
           ),
-          [categories, form, onFinish, response._id, response.code]
+          [
+            categories,
+            form,
+            onFinish,
+            response._id,
+            response.code,
+            response.cover,
+          ]
         )}
       </Wrapper>
     </Spin>

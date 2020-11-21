@@ -5,7 +5,7 @@
   "paginate": {
     "default": 10,
     "max": 100
-  },
+	},
   "authentication": {
     "entity": "user",
     "service": "users",

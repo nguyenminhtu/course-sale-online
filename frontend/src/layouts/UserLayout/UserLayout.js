@@ -1,4 +1,12 @@
-import { Layout, Menu, Avatar, Dropdown, Input, Button } from "antd";
+import {
+  Layout,
+  Menu,
+  Avatar,
+  Dropdown,
+  Input,
+  Button,
+  AutoComplete,
+} from "antd";
 import { Link } from "react-router-dom";
 import { useContext, useMemo } from "react";
 import {
@@ -7,13 +15,13 @@ import {
   UserOutlined,
   LoginOutlined,
   UserAddOutlined,
+  ShoppingFilled,
 } from "@ant-design/icons";
 
 import AuthContext from "contexts/auth";
 import Wrapper from "./UserLayout.styles";
 
 const { Header, Content, Footer } = Layout;
-const { Search } = Input;
 
 const UserLayout = ({ children }) => {
   const { dispatch, isAuth } = useContext(AuthContext);
@@ -23,6 +31,8 @@ const UserLayout = ({ children }) => {
       <>
         {isAuth ? (
           <div className="user-info">
+            <ShoppingFilled className="shopping-cart-item" />
+
             <Dropdown
               overlay={
                 <Menu>
@@ -43,7 +53,7 @@ const UserLayout = ({ children }) => {
             </Dropdown>
           </div>
         ) : (
-          <>
+          <div>
             <Link to="/sign_in">
               <Button
                 icon={<LoginOutlined />}
@@ -63,7 +73,7 @@ const UserLayout = ({ children }) => {
                 Sign Up
               </Button>
             </Link>
-          </>
+          </div>
         )}
       </>
     ),
@@ -74,17 +84,35 @@ const UserLayout = ({ children }) => {
     <Wrapper>
       <Layout>
         <Header style={{ position: "fixed", zIndex: 1, width: "100%" }}>
-          <div className="logo">NKH</div>
+          {useMemo(
+            () => (
+              <div className="logo">
+                <Link to="/">NKH</Link>
+              </div>
+            ),
+            []
+          )}
 
-          <Search
-            placeholder="Search course here..."
-            onSearch={(value) => console.log(value)}
-            enterButton
-            allowClear
-          />
+          {useMemo(
+            () => (
+              <AutoComplete
+                onSelect={() => {}}
+                onSearch={() => {}}
+                onClear={() => {}}
+                allowClear
+              >
+                <Input.Search
+                  size="large"
+                  placeholder="Autocomplete search course here..."
+                />
+              </AutoComplete>
+            ),
+            []
+          )}
 
           {userAuthArea}
         </Header>
+
         <Content
           className="site-layout"
           style={{ padding: "0 50px", marginTop: 64 }}
@@ -96,9 +124,15 @@ const UserLayout = ({ children }) => {
             {children}
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Course Sale Online @2020 Created by NKH
-        </Footer>
+
+        {useMemo(
+          () => (
+            <Footer style={{ textAlign: "center" }}>
+              Course Sale Online @2020 Created by NKH
+            </Footer>
+          ),
+          []
+        )}
       </Layout>
     </Wrapper>
   );

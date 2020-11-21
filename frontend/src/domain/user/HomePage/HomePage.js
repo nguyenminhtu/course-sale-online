@@ -1,31 +1,18 @@
-import { Tabs, Spin, Row, Card, Col, List, Carousel, Button } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { Tabs, Spin, Divider } from "antd";
+import { useEffect, useState } from "react";
 
+import CourseCarousel from "components/CourseCarousel";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./HomePage.styles";
 
 const { TabPane } = Tabs;
 
-const settings = {
-  dots: false,
-  infinite: true,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  // autoplay: true,
-  // speed: 10000,
-  // autoplaySpeed: 10000,
-  lazyLoad: true,
-};
-
 const HomePage = () => {
   const {
     get,
     loading,
-    response = { categories: [], courses: [] },
+    response = { categories: [], courses: [], hotCourses: [] },
   } = useRequest({});
-
-  const sliderRef = useRef(null);
 
   const [tabKey, setTabKey] = useState("");
 
@@ -34,60 +21,61 @@ const HomePage = () => {
     get(`/user-homes?${queryByCategory}`);
   }, [get, tabKey]);
 
-  console.log(response.courses);
-
   return (
     <Wrapper>
       <Spin
         style={{ maxHeight: "100vh", minHeight: "100vh" }}
         spinning={loading}
       >
+        <Divider orientation="center">HOT COURSES</Divider>
+        {response.code ? null : (
+          <CourseCarousel courses={response.hotCourses} />
+        )}
+
+        <Divider className="nkh" orientation="center">
+          COURSES BY CATEGORY
+        </Divider>
         <Tabs className="category-content" onChange={(key) => setTabKey(key)}>
           {response.code
             ? null
             : response.categories.map((category) => (
                 <TabPane tab={category.name} key={category._id}>
-                  {!!!response.courses.length && (
-                    <p>Have no course in this category</p>
-                  )}
-
-                  {!!response.courses.length && (
-                    <>
-                      <Button
-                        onClick={() =>
-                          sliderRef.current && sliderRef.current.prev()
-                        }
-                        shape="circle"
-                        className="prev-button-slider"
-                        size="large"
-                        icon={<LeftOutlined />}
-                      />
-                      <Carousel {...settings} ref={sliderRef}>
-                        {response.courses.map((course) => (
-                          <Card
-                            className="course-item"
-                            hoverable
-                            title={course.name}
-                            key={course._id}
-                          >
-                            {course.description}
-                          </Card>
-                        ))}
-                      </Carousel>
-                      <Button
-                        onClick={() =>
-                          sliderRef.current && sliderRef.current.next()
-                        }
-                        shape="circle"
-                        size="large"
-                        className="right-button-slider"
-                        icon={<RightOutlined />}
-                      />
-                    </>
-                  )}
+                  <CourseCarousel courses={response.courses} />
                 </TabPane>
               ))}
         </Tabs>
+
+        <Divider className="nkh" orientation="center">
+          WHO WE ARE ?
+        </Divider>
+        <div className="introduce">
+          <h3>
+            NKH is the leading global marketplace for teaching and learning,
+            connecting millions of students to the skills they need to succeed.
+          </h3>
+
+          <div className="statistic">
+            <div>
+              <h1>35M</h1>
+              <p>Learners</p>
+            </div>
+
+            <div>
+              <h1>120k</h1>
+              <p>Courses</p>
+            </div>
+
+            <div>
+              <h1>400M</h1>
+              <p>Course enrollments</p>
+            </div>
+
+            <div>
+              <h1>110M</h1>
+              <p>Minutes of video</p>
+            </div>
+          </div>
+        </div>
       </Spin>
     </Wrapper>
   );

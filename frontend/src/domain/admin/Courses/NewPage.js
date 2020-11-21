@@ -7,8 +7,9 @@ import {
   Row,
   Col,
   notification,
+  Upload,
 } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -25,7 +26,14 @@ const NewPage = () => {
 
   const onFinish = useCallback(
     async (data) => {
-      const responseCourse = await post("/courses", data);
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("category", data.category);
+      formData.append("price", data.price);
+      formData.append("description", data.description);
+      formData.append("cover", data.cover.file);
+      const responseCourse = await post("/courses", formData);
+
       if (responseCourse._id) {
         notification.success({
           message: "Create course successfully",
@@ -105,6 +113,31 @@ const NewPage = () => {
                     ]}
                   >
                     <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Cover photo"
+                    name="cover"
+                    tooltip={{
+                      title: "This is a required field",
+                      icon: <InfoCircleOutlined />,
+                    }}
+                    rules={[
+                      { required: true, message: "This field is required" },
+                    ]}
+                    valuePropName="cover"
+                  >
+                    <Upload
+                      className="upload-wrapper"
+                      beforeUpload={() => false}
+                      accept="image/png, image/jpg, image/jpeg"
+                      multiple={false}
+                      listType="picture"
+                    >
+                      <Button icon={<UploadOutlined />}>
+                        Upload cover photo
+                      </Button>
+                    </Upload>
                   </Form.Item>
 
                   <Form.Item

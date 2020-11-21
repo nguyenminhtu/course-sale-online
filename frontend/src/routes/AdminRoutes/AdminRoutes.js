@@ -77,7 +77,7 @@ function App() {
         />
         <AuthenticatedRoute
           exact
-          path="/admin/courses/:categoryId/edit"
+          path="/admin/courses/:courseId/edit"
           component={EditCourse}
         />
 
