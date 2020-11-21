@@ -14,10 +14,12 @@ const useRequest = ({ optionParams = {} }) => {
       interceptors: {
         request: ({ options }) => ({
           ...options,
-          headers: {
-            ...options.headers,
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: accessToken
+            ? {
+                ...options.headers,
+                Authorization: `Bearer ${accessToken}`,
+              }
+            : { ...options.headers },
         }),
         response: ({ response }) => {
           if (!!accessToken && response.status === 401) {
