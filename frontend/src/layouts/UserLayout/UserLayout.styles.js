@@ -20,6 +20,10 @@ export default styled.div`
         margin-right: 32px;
         cursor: pointer;
       }
+
+      .ant-scroll-number {
+        right: 28px !important;
+      }
     }
 
     .logo {
@@ -40,23 +44,24 @@ export default styled.div`
     .ant-select-auto-complete {
       width: 60%;
 
+      .ant-select-clear {
+        right: 50px !important;
+      }
+
       .ant-input-search {
-        margin-right: 32px;
-        height: 35px;
         width: 100%;
 
-        .ant-input-affix-wrapper,
         .ant-input-group-addon {
           padding: 0;
-        }
 
-        input {
-          height: 35px;
-          padding-left: 11px;
-        }
+          button {
+            background-color: #1890ff;
+            border-color: #40a9ff;
+          }
 
-        .ant-btn {
-          height: 35px;
+          svg {
+            color: #fff;
+          }
         }
       }
     }

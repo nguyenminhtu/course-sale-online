@@ -6,9 +6,12 @@ import {
   Input,
   Button,
   AutoComplete,
+  Badge,
+  Tag,
+  List,
 } from "antd";
 import { Link } from "react-router-dom";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import {
   SelectOutlined,
   LogoutOutlined,
@@ -16,22 +19,100 @@ import {
   LoginOutlined,
   UserAddOutlined,
   ShoppingFilled,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
+import _debounce from "lodash/debounce";
 
 import AuthContext from "contexts/auth";
+import CartContext from "contexts/cart";
+import useEnrollCourse from "hooks/useEnrollCourse";
+import useRequest from "hooks/useRequest";
 import Wrapper from "./UserLayout.styles";
 
 const { Header, Content, Footer } = Layout;
 
 const UserLayout = ({ children }) => {
-  const { dispatch, isAuth } = useContext(AuthContext);
+  const { dispatch: dispatchAuth, isAuth } = useContext(AuthContext);
+  const { cart, dispatch: dispatchCart } = useContext(CartContext);
+  const history = useHistory();
+
+  const { get, loading } = useRequest({});
+  const { onEnrollCourse, renderCheckoutModal } = useEnrollCourse();
+
+  const [courseOptions, setCourseOptions] = useState([]);
+
+  const handleSearchCourse = useCallback(
+    async (value) => {
+      if (!value) {
+        setCourseOptions([]);
+        return;
+      }
+
+      const result = await get(`/search-courses?q=${value}`);
+
+      if (result.courses) {
+        setCourseOptions(
+          result.courses.map((course) => ({
+            value: course.name,
+            id: course._id,
+          }))
+        );
+      }
+    },
+    [get]
+  );
+
+  const cartContent = useMemo(
+    () => (
+      <div style={{ width: 300, backgroundColor: "#fff" }}>
+        <List
+          bordered
+          dataSource={cart}
+          renderItem={(item) => (
+            <List.Item
+              key={item.id}
+              actions={[
+                <CloseCircleOutlined
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    dispatchCart({ type: "removeItem", payload: item.id })
+                  }
+                />,
+              ]}
+            >
+              <List.Item.Meta
+                title={item.name}
+                description={(() => (
+                  <>
+                    Quantity: <Tag color="volcano">{item.quantity}</Tag>
+                  </>
+                ))()}
+              />
+            </List.Item>
+          )}
+        />
+
+        {!!cart.length && (
+          <Button type="primary" block onClick={onEnrollCourse}>
+            Enroll now
+          </Button>
+        )}
+      </div>
+    ),
+    [cart, dispatchCart, onEnrollCourse]
+  );
 
   const userAuthArea = useMemo(
     () => (
       <>
         {isAuth ? (
           <div className="user-info">
-            <ShoppingFilled className="shopping-cart-item" />
+            <Dropdown overlay={cartContent}>
+              <Badge count={cart.length}>
+                <ShoppingFilled className="shopping-cart-item" />
+              </Badge>
+            </Dropdown>
 
             <Dropdown
               overlay={
@@ -42,7 +123,7 @@ const UserLayout = ({ children }) => {
                   <Menu.Item
                     key="logout"
                     icon={<LogoutOutlined />}
-                    onClick={() => dispatch({ type: "logout" })}
+                    onClick={() => dispatchAuth({ type: "logout" })}
                   >
                     Logout
                   </Menu.Item>
@@ -77,7 +158,7 @@ const UserLayout = ({ children }) => {
         )}
       </>
     ),
-    [dispatch, isAuth]
+    [cart.length, cartContent, dispatchAuth, isAuth]
   );
 
   return (
@@ -96,18 +177,20 @@ const UserLayout = ({ children }) => {
           {useMemo(
             () => (
               <AutoComplete
-                onSelect={() => {}}
-                onSearch={() => {}}
-                onClear={() => {}}
+                options={courseOptions}
+                onSelect={(_, { id }) => history.push(`/courses/${id}`)}
+                onSearch={_debounce(handleSearchCourse, 500)}
+                onClear={() => setCourseOptions([])}
                 allowClear
               >
                 <Input.Search
                   size="large"
                   placeholder="Autocomplete search course here..."
+                  loading={loading}
                 />
               </AutoComplete>
             ),
-            []
+            [courseOptions, handleSearchCourse, history, loading]
           )}
 
           {userAuthArea}
@@ -133,6 +216,8 @@ const UserLayout = ({ children }) => {
           ),
           []
         )}
+
+        {renderCheckoutModal()}
       </Layout>
     </Wrapper>
   );

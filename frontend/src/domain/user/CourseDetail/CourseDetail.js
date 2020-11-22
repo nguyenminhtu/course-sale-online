@@ -1,8 +1,21 @@
-import { Spin, Row, Col, Card, Rate, Button, Divider, Statistic } from "antd";
-import { useEffect } from "react";
+import {
+  Spin,
+  Row,
+  Col,
+  Card,
+  Rate,
+  Button,
+  Divider,
+  Statistic,
+  Tag,
+} from "antd";
+import { useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 
+import CartContext from "contexts/cart";
+import formatNumber from "utils/formatNumber";
 import ReviewCarousel from "components/ReviewCarousel";
+import useEnrollCourse from "hooks/useEnrollCourse";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./CourseDetail.styles";
 
@@ -10,17 +23,18 @@ import DefaultCourseImage from "assets/images/default-course.png";
 
 const CourseDetail = () => {
   const { courseId } = useParams();
+  const { dispatch } = useContext(CartContext);
+
   const {
     get,
     loading,
     response = { course: {}, lessons: [], reviews: [] },
   } = useRequest({});
+  const { onEnrollCourse, renderCheckoutModal } = useEnrollCourse();
 
   useEffect(() => {
     get(`/course-detail?courseId=${courseId}`);
   }, [courseId, get]);
-
-  console.log(response);
 
   return (
     <Wrapper>
@@ -65,14 +79,46 @@ const CourseDetail = () => {
                         {response.course.description}
                       </p>
 
+                      <p>
+                        <Tag color="volcano">
+                          {formatNumber(response.course.price)}
+                        </Tag>
+                      </p>
+
                       <div style={{ marginBottom: 16 }}>
                         4.5 <Rate disabled allowHalf value={4.5} /> (100,000
                         ratings)
                       </div>
 
                       <p>
-                        <Button size="large" type="primary">
+                        <Button
+                          size="large"
+                          type="primary"
+                          onClick={() => {
+                            dispatch({
+                              type: "addItem",
+                              payload: response.course,
+                            });
+
+                            setTimeout(() => {
+                              onEnrollCourse();
+                            }, 300);
+                          }}
+                        >
                           ENROLL NOW
+                        </Button>
+
+                        <Button
+                          style={{ marginLeft: 16 }}
+                          type="default"
+                          onClick={() => {
+                            dispatch({
+                              type: "addItem",
+                              payload: response.course,
+                            });
+                          }}
+                        >
+                          ADD TO CART
                         </Button>
                       </p>
                     </Card>
@@ -132,6 +178,8 @@ const CourseDetail = () => {
             </Divider>
 
             <ReviewCarousel reviews={response.reviews} />
+
+            {renderCheckoutModal()}
           </>
         )}
       </Spin>

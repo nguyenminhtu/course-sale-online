@@ -1,30 +1,33 @@
-import { Card, Carousel, Button, Image } from "antd";
+import { Card, Carousel, Button, Image, Tag } from "antd";
 import {
   LeftOutlined,
   RightOutlined,
   ShoppingCartOutlined,
   DollarOutlined,
 } from "@ant-design/icons";
-import { useRef, memo } from "react";
+import { useRef, memo, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
+import CartContext from "contexts/cart";
+import useEnrollCourse from "hooks/useEnrollCourse";
 import Wrapper from "./CourseCarousel.styles";
 
 import DefaultCourseImage from "assets/images/default-course.png";
+import formatNumber from "utils/formatNumber";
 
 const settings = {
   dots: false,
   infinite: true,
   slidesToShow: 4,
   slidesToScroll: 1,
-  // autoplay: true,
-  // speed: 1000,
-  // autoplaySpeed: 10000,
   lazyLoad: true,
 };
 
 const CourseCarousel = ({ courses = [] }) => {
+  const { dispatch } = useContext(CartContext);
   const history = useHistory();
+
+  const { onEnrollCourse, renderCheckoutModal } = useEnrollCourse();
 
   const sliderRef = useRef(null);
 
@@ -62,13 +65,35 @@ const CourseCarousel = ({ courses = [] }) => {
                   />
                 }
                 actions={[
-                  <ShoppingCartOutlined key="cart" />,
-                  <DollarOutlined key="dollar" />,
+                  <ShoppingCartOutlined
+                    key="cart"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      dispatch({ type: "addItem", payload: course });
+                    }}
+                  />,
+                  <DollarOutlined
+                    key="dollar"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      dispatch({ type: "addItem", payload: course });
+                      setTimeout(() => {
+                        onEnrollCourse();
+                      }, 300);
+                    }}
+                  />,
                 ]}
               >
                 <Card.Meta
                   title={course.name}
-                  description={course.description}
+                  description={(() => (
+                    <>
+                      <p style={{ marginBottom: 8 }}>
+                        <Tag color="#001529">{formatNumber(course.price)}</Tag>
+                      </p>
+                      <p>{course.description}</p>
+                    </>
+                  ))()}
                 />
               </Card>
             ))}
@@ -84,6 +109,8 @@ const CourseCarousel = ({ courses = [] }) => {
           )}
         </>
       )}
+
+      {renderCheckoutModal()}
     </Wrapper>
   );
 };

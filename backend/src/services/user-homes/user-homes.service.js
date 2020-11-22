@@ -2,6 +2,7 @@ const createCourseModel = require("../../models/courses.model");
 const createCategoryModel = require("../../models/categories.model");
 const createLessonModel = require("../../models/lessons.model");
 const createReviewModel = require("../../models/reviews.model");
+const createRequestModel = require("../../models/requests.model");
 
 module.exports = function (app) {
   app.get("/user-homes", async (req, res) => {
@@ -36,6 +37,30 @@ module.exports = function (app) {
       .limit(10);
 
     res.json({ course, lessons, reviews });
+  });
+
+  app.get("/search-courses", async (req, res) => {
+    const { q } = req.query;
+
+    const courses = await createCourseModel(app).find({
+      name: { $regex: q, $options: "ig" },
+    });
+
+    res.json({ courses });
+  });
+
+  app.post("/checkout", async (req, res) => {
+    const { courses, user, note } = req.body;
+
+    for (let i = 0; i < courses.length; i++) {
+      await createRequestModel(app).create({
+        user,
+        course: courses[i],
+        note,
+      });
+    }
+
+    res.json({ status: "success" });
   });
 
   app.service("user-homes");

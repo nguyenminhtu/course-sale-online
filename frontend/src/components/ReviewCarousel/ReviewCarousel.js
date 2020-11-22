@@ -11,9 +11,9 @@ const settings = {
   infinite: true,
   slidesToShow: 5,
   slidesToScroll: 1,
-  // autoplay: true,
-  // speed: 1000,
-  // autoplaySpeed: 10000,
+  autoplay: true,
+  speed: 1000,
+  autoplaySpeed: 5000,
   lazyLoad: true,
 };
 

@@ -13,7 +13,20 @@ const PublicRoute = ({ component: Component, ...restProps }) => {
         !isAuth ? (
           <Component {...props} />
         ) : (
-          <Redirect to={{ pathname: user.role === 0 ? "/admin" : "/" }} />
+          <Redirect
+            to={{
+              pathname: (() => {
+                const redirectURL = localStorage.getItem("redirectURL");
+                redirectURL && localStorage.removeItem("redirectURL");
+
+                return redirectURL
+                  ? redirectURL
+                  : user.role === 0
+                  ? "/admin"
+                  : "/";
+              })(),
+            }}
+          />
         )
       }
     />

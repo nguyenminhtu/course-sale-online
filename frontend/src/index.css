@@ -23,3 +23,8 @@ code {
 .ant-table-pagination-right {
   padding-right: 16px;
 }
+
+ul.ant-dropdown-menu-items {
+  margin-bottom: 0 !important;
+  padding-left: 16px;
+}

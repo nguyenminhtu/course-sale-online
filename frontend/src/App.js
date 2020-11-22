@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { AuthProvider } from "contexts/auth";
+import { CartProvider } from "contexts/cart";
 
 import SignInPage from "containers/SignIn";
 import SignUpPage from "containers/SignUp";
@@ -26,15 +27,17 @@ function App() {
             <AdminRoutes />
           </Route>
 
-          <UserLayout>
-            <Route exact path="/">
-              <UserHomePage />
-            </Route>
+          <CartProvider>
+            <UserLayout>
+              <Route exact path="/">
+                <UserHomePage />
+              </Route>
 
-            <Route path="/courses/:courseId">
-              <CourseDetailPage />
-            </Route>
-          </UserLayout>
+              <Route path="/courses/:courseId">
+                <CourseDetailPage />
+              </Route>
+            </UserLayout>
+          </CartProvider>
         </Switch>
       </Router>
     </AuthProvider>
