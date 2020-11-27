@@ -2,6 +2,7 @@ const createExamModel = require("./exams.model");
 const createLessonModel = require("./lessons.model");
 const createQuestionModel = require("./questions.model");
 const createRequestModel = require("./requests.model");
+const createReviewModel = require("./reviews.model");
 
 module.exports = function (app) {
   const modelName = "courses";
@@ -31,6 +32,7 @@ module.exports = function (app) {
     await createLessonModel(app).deleteMany({ course: query });
     await createQuestionModel(app).deleteMany({ course: query });
     await createRequestModel(app).deleteMany({ course: query });
+    await createReviewModel(app).deleteMany({ course: query });
     next();
   });
 

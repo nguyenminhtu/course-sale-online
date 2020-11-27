@@ -33,5 +33,6 @@ module.exports = function (app) {
   if (mongooseClient.modelNames().includes(modelName)) {
     mongooseClient.deleteModel(modelName);
   }
+
   return mongooseClient.model(modelName, schema);
 };

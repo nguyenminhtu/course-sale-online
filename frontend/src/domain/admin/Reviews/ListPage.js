@@ -13,7 +13,7 @@ const columns = [
     dataIndex: "user",
     key: "user",
     render: (_, record) => {
-      return record.user.username;
+      return record.user && record.user.username;
     },
   },
   {
@@ -21,7 +21,7 @@ const columns = [
     dataIndex: "course",
     key: "course",
     render: (_, record) => {
-      return record.course.name;
+      return record.course && record.course.name;
     },
   },
   {

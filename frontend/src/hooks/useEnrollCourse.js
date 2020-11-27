@@ -49,7 +49,7 @@ const useEnrollCourse = () => {
       placement: "topRight",
     });
     setShowModalCheckout(false);
-  }, [cart, dispatch, post, user._id]);
+  }, [cart, dispatch, post, user]);
 
   return {
     onEnrollCourse,

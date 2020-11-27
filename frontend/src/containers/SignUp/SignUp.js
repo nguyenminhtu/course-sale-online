@@ -1,53 +1,60 @@
 import { Form, Input, Button, DatePicker, Spin, Alert, Radio } from "antd";
 import { Link } from "react-router-dom";
-import { useCallback, useMemo, useContext } from "react";
+import { useCallback, useMemo } from "react";
 
-import AuthContext from "contexts/auth";
+// import AuthContext from "contexts/auth";
 import PageHeaderComponent from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./SignUp.styles";
 
 const SignUp = () => {
-  const { dispatch } = useContext(AuthContext);
+  // const { dispatch } = useContext(AuthContext);
   const { post, loading } = useRequest({});
 
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
     async (values) => {
-      const responseCreateUser = await post("/users", values);
+      const responseCreateUser = await post("/users", {
+        ...values,
+        dob: values.dob ? values.dob.format("DD/MM/YYYY") : "",
+      });
 
       if (responseCreateUser.code) {
         form.setFieldsValue({ errorMessage: responseCreateUser.message });
         return;
       }
 
-      const responseLogin = await post("/authentication", {
-        username: values.username,
-        password: values.password,
-        strategy: "local",
+      // const responseLogin = await post("/authentication", {
+      //   username: values.username,
+      //   password: values.password,
+      //   strategy: "local",
+      // });
+
+      // if (responseLogin.code) {
+      //   form.setFieldsValue({ errorMessage: responseLogin.message });
+      //   return;
+      // }
+
+      // const { accessToken, user } = responseLogin;
+
+      form.resetFields();
+      form.setFieldsValue({
+        successMessage:
+          "Sign up successfully. An active email was sent to your email. Please check and active your account.",
       });
+      // sessionStorage.setItem("accessToken", accessToken);
+      // sessionStorage.setItem("user", JSON.stringify(user));
+      // sessionStorage.setItem("isAuth", true);
 
-      if (responseLogin.code) {
-        form.setFieldsValue({ errorMessage: responseLogin.message });
-        return;
-      }
-
-      const { accessToken, user } = responseLogin;
-
-      form.setFieldsValue({ successMessage: "Login successfully" });
-      sessionStorage.setItem("accessToken", accessToken);
-      sessionStorage.setItem("user", JSON.stringify(user));
-      sessionStorage.setItem("isAuth", true);
-
-      setTimeout(() => {
-        dispatch({
-          type: "login",
-          payload: { user, accessToken },
-        });
-      }, 300);
+      // setTimeout(() => {
+      //   dispatch({
+      //     type: "login",
+      //     payload: { user, accessToken },
+      //   });
+      // }, 300);
     },
-    [dispatch, form, post]
+    [form, post]
   );
 
   return (
@@ -110,6 +117,20 @@ const SignUp = () => {
                 </Form.Item>
 
                 <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    {
+                      type: "email",
+                      required: true,
+                      message: "Please input a valid email!",
+                    },
+                  ]}
+                >
+                  <Input autoFocus />
+                </Form.Item>
+
+                <Form.Item
                   label="User name"
                   name="username"
                   rules={[
@@ -119,7 +140,7 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input autoFocus />
+                  <Input />
                 </Form.Item>
 
                 <Form.Item

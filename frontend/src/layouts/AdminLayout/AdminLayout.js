@@ -38,6 +38,9 @@ const AdminLayout = ({ children }) => {
               <Dropdown
                 overlay={
                   <Menu>
+                    <Menu.Item key="user-site" icon={<SelectOutlined />}>
+                      <Link to="/">User site</Link>
+                    </Menu.Item>
                     <Menu.Item key="user-profile" icon={<SelectOutlined />}>
                       User profile
                     </Menu.Item>

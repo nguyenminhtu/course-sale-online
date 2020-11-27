@@ -4,14 +4,25 @@ const createReviewModel = require("./reviews.model");
 module.exports = function (app) {
   const modelName = "users";
   const mongooseClient = app.get("mongooseClient");
-  const schema = new mongooseClient.Schema(
+  const { Schema } = mongooseClient;
+  const schema = new Schema(
     {
+      email: { type: String, required: true, lowercase: true, unique: true },
       username: { type: String, required: true, lowercase: true, unique: true },
       password: { type: String, required: true },
       dob: { type: String },
       gender: { type: Number, enum: [0, 1, 2] },
       phone: { type: String },
       role: { type: Number, enum: [0, 1], default: 1 },
+      avatar: { type: String },
+      courses: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "courses",
+        },
+      ],
+      activationToken: { type: String },
+      forgotPasswordToken: { type: String },
     },
     {
       timestamps: true,

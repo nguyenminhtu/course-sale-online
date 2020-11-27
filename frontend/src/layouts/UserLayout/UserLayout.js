@@ -20,6 +20,7 @@ import {
   UserAddOutlined,
   ShoppingFilled,
   CloseCircleOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import _debounce from "lodash/debounce";
@@ -33,7 +34,7 @@ import Wrapper from "./UserLayout.styles";
 const { Header, Content, Footer } = Layout;
 
 const UserLayout = ({ children }) => {
-  const { dispatch: dispatchAuth, isAuth } = useContext(AuthContext);
+  const { dispatch: dispatchAuth, isAuth, user } = useContext(AuthContext);
   const { cart, dispatch: dispatchCart } = useContext(CartContext);
   const history = useHistory();
 
@@ -117,9 +118,17 @@ const UserLayout = ({ children }) => {
             <Dropdown
               overlay={
                 <Menu>
-                  <Menu.Item key="user-profile" icon={<SelectOutlined />}>
-                    User profile
+                  <Menu.Item key="my-courses" icon={<BookOutlined />}>
+                    <Link to="/my-courses">My courses</Link>
                   </Menu.Item>
+                  <Menu.Item key="user-profile" icon={<SelectOutlined />}>
+                    <Link to="/user-profile">User profile</Link>
+                  </Menu.Item>
+                  {user.role === 0 && (
+                    <Menu.Item key="admin-site" icon={<SelectOutlined />}>
+                      <Link to="/admin">Admin site</Link>
+                    </Menu.Item>
+                  )}
                   <Menu.Item
                     key="logout"
                     icon={<LogoutOutlined />}

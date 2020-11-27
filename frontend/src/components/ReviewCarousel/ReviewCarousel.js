@@ -8,7 +8,7 @@ import DefaultAvatar from "assets/images/default-avatar.png";
 
 const settings = {
   dots: false,
-  infinite: true,
+  infinite: false,
   slidesToShow: 5,
   slidesToScroll: 1,
   autoplay: true,

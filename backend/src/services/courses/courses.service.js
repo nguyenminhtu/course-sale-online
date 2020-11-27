@@ -50,7 +50,11 @@ module.exports = function (app) {
     );
 
     for (let i = 0; i < deleteCourses.length; i++) {
-      await fs.unlinkSync(`${process.env.PWD}/public${deleteCourses[i].cover}`);
+      try {
+        await fs.unlinkSync(
+          `${process.env.PWD}/public${deleteCourses[i].cover}`
+        );
+      } catch {}
     }
 
     await courseModel.deleteMany({ _id: { $in: selectedIds } });

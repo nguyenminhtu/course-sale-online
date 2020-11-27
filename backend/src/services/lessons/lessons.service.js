@@ -50,7 +50,11 @@ module.exports = function (app) {
     );
 
     for (let i = 0; i < deleteLessons.length; i++) {
-      await fs.unlinkSync(`${process.env.PWD}/public${deleteLessons[i].video}`);
+      try {
+        await fs.unlinkSync(
+          `${process.env.PWD}/public${deleteLessons[i].video}`
+        );
+      } catch {}
     }
 
     await lessonModel.deleteMany({ _id: { $in: selectedIds } });

@@ -17,13 +17,13 @@ import formatNumber from "utils/formatNumber";
 
 const settings = {
   dots: false,
-  infinite: true,
+  infinite: false,
   slidesToShow: 4,
   slidesToScroll: 1,
   lazyLoad: true,
 };
 
-const CourseCarousel = ({ courses = [] }) => {
+const CourseCarousel = ({ courses = [], isBuyed = false }) => {
   const { dispatch } = useContext(CartContext);
   const history = useHistory();
 
@@ -64,33 +64,41 @@ const CourseCarousel = ({ courses = [] }) => {
                     }
                   />
                 }
-                actions={[
-                  <ShoppingCartOutlined
-                    key="cart"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      dispatch({ type: "addItem", payload: course });
-                    }}
-                  />,
-                  <DollarOutlined
-                    key="dollar"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      dispatch({ type: "addItem", payload: course });
-                      setTimeout(() => {
-                        onEnrollCourse();
-                      }, 300);
-                    }}
-                  />,
-                ]}
+                actions={
+                  isBuyed
+                    ? [<span>Start learn</span>]
+                    : [
+                        <ShoppingCartOutlined
+                          key="cart"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            dispatch({ type: "addItem", payload: course });
+                          }}
+                        />,
+                        <DollarOutlined
+                          key="dollar"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            dispatch({ type: "addItem", payload: course });
+                            setTimeout(() => {
+                              onEnrollCourse();
+                            }, 300);
+                          }}
+                        />,
+                      ]
+                }
               >
                 <Card.Meta
                   title={course.name}
                   description={(() => (
                     <>
-                      <p style={{ marginBottom: 8 }}>
-                        <Tag color="#001529">{formatNumber(course.price)}</Tag>
-                      </p>
+                      {isBuyed ? null : (
+                        <p style={{ marginBottom: 8 }}>
+                          <Tag color="#001529">
+                            {formatNumber(course.price)}
+                          </Tag>
+                        </p>
+                      )}
                       <p>{course.description}</p>
                     </>
                   ))()}

@@ -25,11 +25,9 @@ const CourseDetail = () => {
   const { courseId } = useParams();
   const { dispatch } = useContext(CartContext);
 
-  const {
-    get,
-    loading,
-    response = { course: {}, lessons: [], reviews: [] },
-  } = useRequest({});
+  const { get, loading, response = { course: {}, reviews: [] } } = useRequest(
+    {}
+  );
   const { onEnrollCourse, renderCheckoutModal } = useEnrollCourse();
 
   useEffect(() => {
@@ -56,6 +54,7 @@ const CourseDetail = () => {
                   <Col span={8}>
                     <div height={400} style={{ textAlign: "center" }}>
                       <img
+                        style={{ maxWidth: "100%" }}
                         alt={response.course.name}
                         height={400}
                         src={
@@ -165,7 +164,7 @@ const CourseDetail = () => {
               <Col span={6}>
                 <Card>
                   <Statistic
-                    title="Access to a computer with an internet connection."
+                    title="Access to a computer."
                     value={400000}
                     suffix="VND"
                   />
