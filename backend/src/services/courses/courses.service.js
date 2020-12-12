@@ -6,7 +6,9 @@ const hooks = require("./courses.hooks");
 const createCourseModel = require("../../models/courses.model");
 
 if (!fs.existsSync(process.cwd() + "/public/uploads/cover")) {
-  fs.mkdirSync(process.cwd() + "/public/uploads/cover");
+  try {
+    fs.mkdirSync(process.cwd() + "/public/uploads/cover");
+  } catch {}
 }
 
 const storage = multer.diskStorage({
