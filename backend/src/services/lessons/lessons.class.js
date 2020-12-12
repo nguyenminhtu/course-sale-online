@@ -39,7 +39,7 @@ exports.Lessons = class Lessons extends (
       const { oldVideo } = data;
 
       try {
-        await fs.unlinkSync(`${__dirname}/public${oldVideo}`);
+        await fs.unlinkSync(`${process.cwd()}/public${oldVideo}`);
       } catch {}
 
       delete lessonParam.oldVideo;

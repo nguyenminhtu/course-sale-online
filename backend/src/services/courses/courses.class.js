@@ -37,7 +37,7 @@ exports.Courses = class Courses extends (
       const { oldCover } = data;
 
       try {
-        await fs.unlinkSync(`${__dirname}/public${oldCover}`);
+        await fs.unlinkSync(`${process.cwd()}/public${oldCover}`);
       } catch {}
 
       delete courseParam.oldCover;

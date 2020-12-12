@@ -6,13 +6,13 @@ const { Users } = require("./users.class");
 const createModel = require("../../models/users.model");
 const hooks = require("./users.hooks");
 
-if (!fs.existsSync(__dirname + "/public/uploads/avatar")) {
-  fs.mkdirSync(__dirname + "/public/uploads/avatar");
+if (!fs.existsSync(process.cwd() + "/public/uploads/avatar")) {
+  fs.mkdirSync(process.cwd() + "/public/uploads/avatar");
 }
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) =>
-    cb(null, __dirname + "/public/uploads/avatar"), // where the files are being stored
+    cb(null, process.cwd() + "/public/uploads/avatar"), // where the files are being stored
   filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`), // getting the file name
 });
 
@@ -52,7 +52,9 @@ module.exports = function (app) {
 
     for (let i = 0; i < deleteCourses.length; i++) {
       try {
-        await fs.unlinkSync(`${__dirname}/public${deleteCourses[i].avatar}`);
+        await fs.unlinkSync(
+          `${process.cwd()}/public${deleteCourses[i].avatar}`
+        );
       } catch {}
     }
 

@@ -1,12 +1,15 @@
 const fs = require("fs");
+const path = require("path");
 
 const logger = require("./logger");
 const app = require("./app");
 const port = app.get("port");
 const server = app.listen(port);
 
-if (!fs.existsSync(__dirname + "/public/uploads")) {
-  fs.mkdirSync(__dirname + "/public/uploads");
+const uploadPath = path.join(__dirname, "../public/uploads");
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath);
 }
 
 process.on("unhandledRejection", (reason, p) =>
