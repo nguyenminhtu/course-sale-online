@@ -13,29 +13,36 @@ module.exports = function (app) {
   app.get("/user-homes", async (req, res) => {
     const { categoryId, userId } = req.query;
 
-    const categories = await createCategoryModel(app)
-      .find({})
-      .sort({ createdAt: -1 });
-    let courses = categories.length
-      ? await createCourseModel(app).find({
-          category: categoryId ? categoryId : categories[0]._id,
-        })
-      : [];
+    try {
+      const categories = await createCategoryModel(app)
+        .find({})
+        .sort({ createdAt: -1 });
+      let courses = categories.length
+        ? await createCourseModel(app).find({
+            category: categoryId ? categoryId : categories[0]._id,
+          })
+        : [];
 
-    let hotCourses = await createCourseModel(app)
-      .find({})
-      .sort({ purchaseNumber: -1 })
-      .limit(4);
+      let hotCourses = await createCourseModel(app)
+        .find({})
+        .sort({ purchaseNumber: -1 })
+        .limit(4);
 
-    if (userId) {
-      const user = await createUserModel(app).findOne({ _id: userId });
-      courses = courses.filter((course) => !user.courses.includes(course._id));
-      hotCourses = hotCourses.filter(
-        (course) => !user.courses.includes(course._id)
-      );
+      if (userId) {
+        const user = await createUserModel(app).findOne({ _id: userId });
+        courses = courses.filter(
+          (course) => !user.courses.includes(course._id)
+        );
+        hotCourses = hotCourses.filter(
+          (course) => !user.courses.includes(course._id)
+        );
+      }
+
+      res.json({ categories, courses, hotCourses });
+    } catch (err) {
+      console.log("=============== err happen", err);
+      res.json({ categories: [], courses: [], hotCourses: [] });
     }
-
-    res.json({ categories, courses, hotCourses });
   });
 
   app.get("/course-detail", async (req, res) => {
