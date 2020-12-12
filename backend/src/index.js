@@ -9,7 +9,9 @@ const server = app.listen(port);
 const uploadPath = path.join(__dirname, "../public/uploads");
 
 if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath);
+  try {
+    fs.mkdirSync(uploadPath);
+  } catch {}
 }
 
 process.on("unhandledRejection", (reason, p) =>

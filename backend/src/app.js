@@ -57,4 +57,12 @@ app.use(express.errorHandler({ logger }));
 
 app.hooks(appHooks);
 
+app.use("*", (_, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE");
+
+  next();
+});
+
 module.exports = app;
