@@ -47,7 +47,7 @@ exports.Users = class Users extends (
       const { oldAvatar } = data;
 
       try {
-        await fs.unlinkSync(`${process.env.PWD}/public${oldAvatar}`);
+        await fs.unlinkSync(`${__dirname}/public${oldAvatar}`);
       } catch {}
 
       delete userParam.oldAvatar;

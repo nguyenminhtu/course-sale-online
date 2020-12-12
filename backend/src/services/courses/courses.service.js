@@ -5,13 +5,13 @@ const { Courses } = require("./courses.class");
 const hooks = require("./courses.hooks");
 const createCourseModel = require("../../models/courses.model");
 
-if (!fs.existsSync(process.env.PWD + "/public/uploads/cover")) {
-  fs.mkdirSync(process.env.PWD + "/public/uploads/cover");
+if (!fs.existsSync(__dirname + "/public/uploads/cover")) {
+  fs.mkdirSync(__dirname + "/public/uploads/cover");
 }
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) =>
-    cb(null, process.env.PWD + "/public/uploads/cover"), // where the files are being stored
+    cb(null, __dirname + "/public/uploads/cover"), // where the files are being stored
   filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`), // getting the file name
 });
 
@@ -51,9 +51,7 @@ module.exports = function (app) {
 
     for (let i = 0; i < deleteCourses.length; i++) {
       try {
-        await fs.unlinkSync(
-          `${process.env.PWD}/public${deleteCourses[i].cover}`
-        );
+        await fs.unlinkSync(`${__dirname}/public${deleteCourses[i].cover}`);
       } catch {}
     }
 

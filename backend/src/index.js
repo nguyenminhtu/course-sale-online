@@ -5,8 +5,8 @@ const app = require("./app");
 const port = app.get("port");
 const server = app.listen(port);
 
-if (!fs.existsSync(process.env.PWD + "/public/uploads")) {
-  fs.mkdirSync(process.env.PWD + "/public/uploads");
+if (!fs.existsSync(__dirname + "/public/uploads")) {
+  fs.mkdirSync(__dirname + "/public/uploads");
 }
 
 process.on("unhandledRejection", (reason, p) =>

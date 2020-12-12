@@ -1,7 +1,9 @@
 const { Service } = require("feathers-mongoose");
 const fs = require("fs");
 
-exports.Courses = class Courses extends Service {
+exports.Courses = class Courses extends (
+  Service
+) {
   async find(params) {
     const queryParams = { $populate: "category", $sort: { createdAt: -1 } };
     Object.keys(params.query).forEach((key) => {
@@ -35,7 +37,7 @@ exports.Courses = class Courses extends Service {
       const { oldCover } = data;
 
       try {
-        await fs.unlinkSync(`${process.env.PWD}/public${oldCover}`);
+        await fs.unlinkSync(`${__dirname}/public${oldCover}`);
       } catch {}
 
       delete courseParam.oldCover;

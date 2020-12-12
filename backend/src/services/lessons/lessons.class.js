@@ -1,7 +1,9 @@
 const { Service } = require("feathers-mongoose");
 const fs = require("fs");
 
-exports.Lessons = class Lessons extends Service {
+exports.Lessons = class Lessons extends (
+  Service
+) {
   async find(params) {
     const queryParams = { $populate: "course", $sort: { createdAt: -1 } };
 
@@ -37,7 +39,7 @@ exports.Lessons = class Lessons extends Service {
       const { oldVideo } = data;
 
       try {
-        await fs.unlinkSync(`${process.env.PWD}/public${oldVideo}`);
+        await fs.unlinkSync(`${__dirname}/public${oldVideo}`);
       } catch {}
 
       delete lessonParam.oldVideo;
