@@ -1,4 +1,4 @@
-import { Table, notification } from "antd";
+import { Table, notification, Modal } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -68,13 +68,18 @@ const ListPage = () => {
   }, [get, page, query]);
 
   const handleDeleteUser = useCallback(async () => {
-    await post("/remove_users", { selectedIds });
-    notification.success({
-      message: "Delete user successfully",
-      placement: "topRight",
+    Modal.confirm({
+      content: "Are you sure want to delete these users ?",
+      onOk: async () => {
+        await post("/remove_users", { selectedIds });
+        notification.success({
+          message: "Delete user successfully",
+          placement: "topRight",
+        });
+        setSelectedIds([]);
+        setPage(1);
+      },
     });
-    setSelectedIds([]);
-    setPage(1);
   }, [post, selectedIds]);
 
   return (

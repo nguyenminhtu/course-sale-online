@@ -33,7 +33,11 @@ const CourseCarousel = ({ courses = [], isBuyed = false }) => {
 
   return (
     <Wrapper>
-      {!!!courses.length && <p>Have no course in this category</p>}
+      {!!!courses.length && (
+        <p style={{ textAlign: "center", margin: "50px 0" }}>
+          Have no course in this category
+        </p>
+      )}
 
       {!!courses.length && (
         <>

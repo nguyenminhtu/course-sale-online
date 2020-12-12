@@ -9,10 +9,34 @@ export default styled.div`
   }
 
   .note-column {
-    max-width: 460px;
-    text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
-    margin-bottom: 0;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+
+  .header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px 16px;
+
+    .search-area {
+      width: 55%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .button-area {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      button {
+        margin-left: 8px;
+      }
+    }
   }
 `;

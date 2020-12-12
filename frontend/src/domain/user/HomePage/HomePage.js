@@ -1,6 +1,7 @@
 import { Tabs, Spin, Divider } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import AuthContext from "contexts/auth";
 import CourseCarousel from "components/CourseCarousel";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./HomePage.styles";
@@ -14,12 +15,20 @@ const HomePage = () => {
     response = { categories: [], courses: [], hotCourses: [] },
   } = useRequest({});
 
+  const { user } = useContext(AuthContext);
+
   const [tabKey, setTabKey] = useState("");
 
   useEffect(() => {
-    const queryByCategory = tabKey ? `?categoryId=${tabKey}` : "";
-    get(`/user-homes${queryByCategory}`);
-  }, [get, tabKey]);
+    const query = user
+      ? tabKey
+        ? `?categoryId=${tabKey}&userId=${user._id}`
+        : `?userId=${user._id}`
+      : tabKey
+      ? `?categoryId=${tabKey}`
+      : "";
+    get(`/user-homes${query}`);
+  }, [get, tabKey, user]);
 
   return (
     <Wrapper>
@@ -35,7 +44,11 @@ const HomePage = () => {
         <Divider className="nkh" orientation="center">
           COURSES BY CATEGORY
         </Divider>
-        <Tabs className="category-content" onChange={(key) => setTabKey(key)}>
+        <Tabs
+          className="category-content"
+          onChange={(key) => setTabKey(key)}
+          centered
+        >
           {response.code
             ? null
             : response.categories.map((category) => (

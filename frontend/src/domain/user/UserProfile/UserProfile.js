@@ -51,14 +51,17 @@ const UserProfile = () => {
 
   const onFinish = useCallback(
     async (data) => {
-      let formData = { ...data, dob: data.dob.format("DD/MM/YYYY") };
+      let formData = {
+        ...data,
+        dob: data.dob ? data.dob.format("DD/MM/YYYY") : "",
+      };
 
       if (typeof data.avatar !== "string") {
         formData = new FormData();
         formData.append("username", data.username);
         formData.append("password", data.password);
         formData.append("gender", data.gender);
-        formData.append("dob", data.dob.format("DD/MM/YYYY"));
+        data.dob && formData.append("dob", data.dob.format("DD/MM/YYYY"));
         formData.append("avatar", data.avatar.file);
         formData.append("oldAvatar", response.avatar);
       }
@@ -108,7 +111,11 @@ const UserProfile = () => {
                               onChange={handleChange}
                             >
                               {avatarUrl ? (
-                                <img alt="avatar" src={avatarUrl} />
+                                <img
+                                  alt="avatar"
+                                  src={avatarUrl}
+                                  style={{ maxWidth: "100%" }}
+                                />
                               ) : (
                                 <div>
                                   <p>

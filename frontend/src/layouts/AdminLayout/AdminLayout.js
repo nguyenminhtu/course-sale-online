@@ -2,9 +2,9 @@ import { Layout, Menu, Avatar, Dropdown } from "antd";
 import { Link } from "react-router-dom";
 import { useState, useContext } from "react";
 import {
-  UserOutlined,
   SelectOutlined,
   LogoutOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import AuthContext from "contexts/auth";
@@ -14,7 +14,7 @@ import Wrapper from "./AdminLayout.styles";
 const { Header, Content, Sider } = Layout;
 
 const AdminLayout = ({ children }) => {
-  const { dispatch } = useContext(AuthContext);
+  const { dispatch, user } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
 
   const toggle = () => {
@@ -42,7 +42,7 @@ const AdminLayout = ({ children }) => {
                       <Link to="/">User site</Link>
                     </Menu.Item>
                     <Menu.Item key="user-profile" icon={<SelectOutlined />}>
-                      User profile
+                      <Link to="/user-profile">User profile</Link>
                     </Menu.Item>
                     <Menu.Item
                       key="logout"
@@ -54,7 +54,14 @@ const AdminLayout = ({ children }) => {
                   </Menu>
                 }
               >
-                <Avatar size="large" icon={<UserOutlined />} />
+                {!!user && !!user.avatar ? (
+                  <Avatar
+                    size="large"
+                    src={`${process.env.REACT_APP_API_URL}${user.avatar}`}
+                  />
+                ) : (
+                  <Avatar size="large" icon={<UserOutlined />} />
+                )}
               </Dropdown>
             </div>
           </Header>

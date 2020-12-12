@@ -1,4 +1,4 @@
-import { Table, notification } from "antd";
+import { Table, notification, Modal } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -46,13 +46,18 @@ const ListPage = () => {
   }, [get, page, query]);
 
   const handleDeleteQuestion = useCallback(async () => {
-    await post("/remove_questions", { selectedIds });
-    notification.success({
-      message: "Delete question successfully",
-      placement: "topRight",
+    Modal.confirm({
+      content: "Are you sure want to delete these questions ?",
+      onOk: async () => {
+        await post("/remove_questions", { selectedIds });
+        notification.success({
+          message: "Delete question successfully",
+          placement: "topRight",
+        });
+        setSelectedIds([]);
+        setPage(1);
+      },
     });
-    setSelectedIds([]);
-    setPage(1);
   }, [post, selectedIds]);
 
   return (

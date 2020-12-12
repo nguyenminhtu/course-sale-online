@@ -50,7 +50,9 @@ const UserLayout = ({ children }) => {
         return;
       }
 
-      const result = await get(`/search-courses?q=${value}`);
+      const result = await get(
+        `/search-courses?q=${value}${user ? "&userId=" + user._id : ""}`
+      );
 
       if (result.courses) {
         setCourseOptions(
@@ -61,7 +63,7 @@ const UserLayout = ({ children }) => {
         );
       }
     },
-    [get]
+    [get, user]
   );
 
   const cartContent = useMemo(
@@ -139,7 +141,14 @@ const UserLayout = ({ children }) => {
                 </Menu>
               }
             >
-              <Avatar size="large" icon={<UserOutlined />} />
+              {!!user.avatar ? (
+                <Avatar
+                  size="large"
+                  src={`${process.env.REACT_APP_API_URL}${user.avatar}`}
+                />
+              ) : (
+                <Avatar size="large" icon={<UserOutlined />} />
+              )}
             </Dropdown>
           </div>
         ) : (
@@ -167,7 +176,7 @@ const UserLayout = ({ children }) => {
         )}
       </>
     ),
-    [cart.length, cartContent, dispatchAuth, isAuth]
+    [cart.length, cartContent, dispatchAuth, isAuth, user]
   );
 
   return (

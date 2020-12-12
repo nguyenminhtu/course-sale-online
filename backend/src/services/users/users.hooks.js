@@ -1,20 +1,11 @@
 const { authenticate } = require("@feathersjs/authentication").hooks;
+const crypto = require("crypto");
 
 const {
   hashPassword,
   protect,
 } = require("@feathersjs/authentication-local").hooks;
-
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "",
-    pass: "",
-  },
-});
+const sendMail = require("../../sendMail");
 
 module.exports = {
   before: {
@@ -25,7 +16,6 @@ module.exports = {
       hashPassword("password"),
       async (context) => {
         const activationToken = crypto.randomBytes(12).toString("hex");
-
         const mailOptions = {
           from: "no-reply@nkh.com",
           to: context.data.email,
@@ -42,7 +32,7 @@ module.exports = {
         };
 
         try {
-          const response = await transporter.sendMail(mailOptions);
+          const response = await sendMail(mailOptions);
         } catch {}
 
         context.data.activationToken = activationToken;
@@ -50,8 +40,8 @@ module.exports = {
         return context;
       },
     ],
-    update: [hashPassword("password"), authenticate("jwt")],
-    patch: [hashPassword("password"), authenticate("jwt")],
+    update: [hashPassword("password")],
+    patch: [hashPassword("password")],
     remove: [authenticate("jwt")],
   },
 

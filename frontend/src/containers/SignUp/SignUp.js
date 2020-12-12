@@ -2,22 +2,23 @@ import { Form, Input, Button, DatePicker, Spin, Alert, Radio } from "antd";
 import { Link } from "react-router-dom";
 import { useCallback, useMemo } from "react";
 
-// import AuthContext from "contexts/auth";
 import PageHeaderComponent from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./SignUp.styles";
 
 const SignUp = () => {
-  // const { dispatch } = useContext(AuthContext);
   const { post, loading } = useRequest({});
 
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
     async (values) => {
+      const clonedValues = { ...values };
+      delete clonedValues.confirm;
+
       const responseCreateUser = await post("/users", {
-        ...values,
-        dob: values.dob ? values.dob.format("DD/MM/YYYY") : "",
+        ...clonedValues,
+        dob: clonedValues.dob ? clonedValues.dob.format("DD/MM/YYYY") : "",
       });
 
       if (responseCreateUser.code) {
@@ -25,34 +26,11 @@ const SignUp = () => {
         return;
       }
 
-      // const responseLogin = await post("/authentication", {
-      //   username: values.username,
-      //   password: values.password,
-      //   strategy: "local",
-      // });
-
-      // if (responseLogin.code) {
-      //   form.setFieldsValue({ errorMessage: responseLogin.message });
-      //   return;
-      // }
-
-      // const { accessToken, user } = responseLogin;
-
       form.resetFields();
       form.setFieldsValue({
         successMessage:
           "Sign up successfully. An active email was sent to your email. Please check and active your account.",
       });
-      // sessionStorage.setItem("accessToken", accessToken);
-      // sessionStorage.setItem("user", JSON.stringify(user));
-      // sessionStorage.setItem("isAuth", true);
-
-      // setTimeout(() => {
-      //   dispatch({
-      //     type: "login",
-      //     payload: { user, accessToken },
-      //   });
-      // }, 300);
     },
     [form, post]
   );
@@ -149,6 +127,32 @@ const SignUp = () => {
                   rules={[
                     { required: true, message: "Please input your password!" },
                   ]}
+                  hasFeedback
+                >
+                  <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                  label="Confirm Password"
+                  name="confirm"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please confirm your password!",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          "The two passwords that you entered do not match!"
+                        );
+                      },
+                    }),
+                  ]}
+                  dependencies={["password"]}
+                  hasFeedback
                 >
                   <Input.Password />
                 </Form.Item>

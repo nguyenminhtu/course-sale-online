@@ -1,6 +1,8 @@
 const { Service } = require("feathers-mongoose");
 
-exports.Requests = class Requests extends Service {
+exports.Requests = class Requests extends (
+  Service
+) {
   async find(params) {
     const queryParams = {
       $populate: ["user", "course"],
@@ -12,6 +14,11 @@ exports.Requests = class Requests extends Service {
           $regex: params.query[key],
           $options: "ig",
         };
+        return;
+      }
+
+      if (["status", "course"].includes(key)) {
+        queryParams[key] = params.query[key];
         return;
       }
 

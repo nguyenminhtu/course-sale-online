@@ -31,6 +31,7 @@ const MyCourses = () => {
   const [categoryQuery, setCategoryQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSearchQuery = useCallback(
     _debounce((value) => setSearchQuery(value), 500),
     []

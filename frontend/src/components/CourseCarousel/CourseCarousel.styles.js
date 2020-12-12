@@ -14,7 +14,7 @@ export default styled.div`
 
       .ant-card-body {
         padding: 16px 24px;
-        overflow-y: auto;
+        overflow-y: hidden;
         max-height: 113px;
         min-height: 113px;
 

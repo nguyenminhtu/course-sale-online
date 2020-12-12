@@ -13,7 +13,7 @@ export default styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 9;
+    -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
   }
 

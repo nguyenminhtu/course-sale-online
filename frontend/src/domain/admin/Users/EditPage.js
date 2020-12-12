@@ -27,7 +27,10 @@ const EditPage = () => {
 
   const onFinish = useCallback(
     async (data) => {
-      const formData = { ...data, dob: data.dob.format("DD/MM/YYYY") };
+      const formData = {
+        ...data,
+        dob: data.dob ? data.dob.format("DD/MM/YYYY") : "",
+      };
       const patchResponse = await patch(`/users/${userId}`, formData);
 
       if (patchResponse._id) {

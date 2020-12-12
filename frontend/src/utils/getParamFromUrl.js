@@ -1,5 +1,5 @@
 const getParamFromUrl = (key) => {
-  const urlParams = new URL(window.location.href);
+  const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(key);
 };
 

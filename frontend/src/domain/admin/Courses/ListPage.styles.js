@@ -9,10 +9,10 @@ export default styled.div`
   }
 
   .description-column {
-    max-width: 460px;
-    text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
-    margin-bottom: 0;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
   }
 `;

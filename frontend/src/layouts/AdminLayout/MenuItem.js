@@ -4,8 +4,8 @@ import {
   VideoCameraOutlined,
   AlertOutlined,
   BookOutlined,
-  FileOutlined,
-  QuestionCircleOutlined,
+  // FileOutlined,
+  // QuestionCircleOutlined,
   BarsOutlined,
   FormOutlined,
 } from "@ant-design/icons";
@@ -34,13 +34,13 @@ const MenuItem = () => {
         <Link to="/admin/lessons">Lessons</Link>
       </Menu.Item>
 
-      <Menu.Item key="exam" icon={<FileOutlined />}>
+      {/* <Menu.Item key="exam" icon={<FileOutlined />}>
         <Link to="/admin/exams">Exams</Link>
       </Menu.Item>
 
       <Menu.Item key="question" icon={<QuestionCircleOutlined />}>
         <Link to="/admin/questions">Questions</Link>
-      </Menu.Item>
+      </Menu.Item> */}
 
       <Menu.Item key="reviews" icon={<FormOutlined />}>
         <Link to="/admin/reviews">Reviews</Link>

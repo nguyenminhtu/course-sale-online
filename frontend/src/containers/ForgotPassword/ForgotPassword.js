@@ -1,24 +1,23 @@
-import { Form, Input, Button, Checkbox, Spin, Alert } from "antd";
+import { Form, Input, Button, Spin, Alert } from "antd";
 import { Link } from "react-router-dom";
-import { useCallback, useMemo, useContext } from "react";
+import { useCallback, useMemo } from "react";
 
-import AuthContext from "contexts/auth";
 import PageHeaderComponent from "components/PageHeader";
 import useRequest from "hooks/useRequest";
-import Wrapper from "./SignIn.styles";
+import Wrapper from "./ForgotPassword.styles";
 
-const SignIn = () => {
-  const { dispatch } = useContext(AuthContext);
+const ForgotPassword = () => {
   const { post, loading } = useRequest({});
 
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
     async (values) => {
-      const response = await post("/authentication", {
-        username: values.username,
-        password: values.password,
-        strategy: "local",
+      form.setFieldsValue({ errorMessage: null });
+      form.setFieldsValue({ successMessage: null });
+
+      const response = await post("/forgot-password", {
+        email: values.email,
       });
 
       if (response.code) {
@@ -26,23 +25,9 @@ const SignIn = () => {
         return;
       }
 
-      const storage = values.remember ? localStorage : sessionStorage;
-
-      const { accessToken, user } = response;
-
-      form.setFieldsValue({ successMessage: "Login successfully" });
-      storage.setItem("accessToken", accessToken);
-      storage.setItem("user", JSON.stringify(user));
-      storage.setItem("isAuth", true);
-
-      setTimeout(() => {
-        dispatch({
-          type: "login",
-          payload: { user, accessToken },
-        });
-      }, 300);
+      form.setFieldsValue({ successMessage: response.message, email: "" });
     },
-    [dispatch, form, post]
+    [form, post]
   );
 
   return (
@@ -53,23 +38,25 @@ const SignIn = () => {
             () => (
               <PageHeaderComponent
                 className="sign-in-title"
-                title="SIGN IN"
+                title="FORGOT PASSWORD"
                 onBack={null}
               />
             ),
             []
           )}
-
-          {useMemo(
-            () => (
-              <Form
-                form={form}
-                name="basic"
-                layout="vertical"
-                initialValues={{ errorMessage: null }}
-                onFinish={onFinish}
-                onChange={() => form.setFieldsValue({ errorMessage: null })}
-              >
+          <Form
+            form={form}
+            name="basic"
+            layout="vertical"
+            initialValues={{ errorMessage: null }}
+            onFinish={onFinish}
+            onChange={() => {
+              form.setFieldsValue({ errorMessage: null });
+              form.setFieldsValue({ successMessage: null });
+            }}
+          >
+            {useMemo(
+              () => (
                 <Form.Item
                   noStyle
                   shouldUpdate={(prevValues, curValues) =>
@@ -86,7 +73,12 @@ const SignIn = () => {
                     ) : null;
                   }}
                 </Form.Item>
+              ),
+              []
+            )}
 
+            {useMemo(
+              () => (
                 <Form.Item
                   noStyle
                   shouldUpdate={(prevValues, curValues) =>
@@ -103,61 +95,50 @@ const SignIn = () => {
                     ) : null;
                   }}
                 </Form.Item>
+              ),
+              []
+            )}
 
+            {useMemo(
+              () => (
                 <Form.Item
-                  label="User name"
-                  name="username"
+                  label="Email"
+                  name="email"
                   rules={[
                     {
                       required: true,
-                      message: "Please input your username!",
+                      message: "Please input your email!",
+                      type: "email",
                     },
                   ]}
                 >
                   <Input autoFocus />
                 </Form.Item>
+              ),
+              []
+            )}
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                  ]}
-                >
-                  <Input.Password />
-                </Form.Item>
-
-                <Form.Item name="remember" valuePropName="checked">
-                  <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
+            {useMemo(
+              () => (
                 <Form.Item className="button-area">
-                  <Link to="/sign_up">
+                  <Link to="/sign_in">
                     <Button type="link" htmlType="button">
-                      Sign up
+                      Sign In
                     </Button>
                   </Link>
 
                   <Button type="primary" htmlType="submit">
-                    Sign me in
+                    Retrieve password
                   </Button>
                 </Form.Item>
-
-                <Form.Item className="button-area">
-                  <Link to="/forgot-password">
-                    <Button type="link" htmlType="button">
-                      Forgot password
-                    </Button>
-                  </Link>
-                </Form.Item>
-              </Form>
-            ),
-            [form, onFinish]
-          )}
+              ),
+              []
+            )}
+          </Form>
         </div>
       </Wrapper>
     </Spin>
   );
 };
 
-export default SignIn;
+export default ForgotPassword;

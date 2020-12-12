@@ -9,12 +9,14 @@ import {
   Statistic,
   Tag,
 } from "antd";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
+import AuthContext from "contexts/auth";
 import CartContext from "contexts/cart";
 import formatNumber from "utils/formatNumber";
 import ReviewCarousel from "components/ReviewCarousel";
+import ReviewForm from "components/ReviewForm";
 import useEnrollCourse from "hooks/useEnrollCourse";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./CourseDetail.styles";
@@ -24,15 +26,35 @@ import DefaultCourseImage from "assets/images/default-course.png";
 const CourseDetail = () => {
   const { courseId } = useParams();
   const { dispatch } = useContext(CartContext);
+  const { isAuth, user } = useContext(AuthContext);
 
-  const { get, loading, response = { course: {}, reviews: [] } } = useRequest(
-    {}
-  );
+  const {
+    get,
+    post,
+    loading,
+    response = { course: {}, reviews: [] },
+  } = useRequest({});
   const { onEnrollCourse, renderCheckoutModal } = useEnrollCourse();
 
   useEffect(() => {
     get(`/course-detail?courseId=${courseId}`);
   }, [courseId, get]);
+
+  const onSubmitReview = useCallback(
+    async (formValues, callback) => {
+      const reviewResponse = await post("/reviews", {
+        ...formValues,
+        user: user._id,
+        course: courseId,
+      });
+
+      if (!reviewResponse.code) {
+        callback();
+        get(`/course-detail?courseId=${courseId}`);
+      }
+    },
+    [courseId, get, post, user]
+  );
 
   return (
     <Wrapper>
@@ -45,13 +67,13 @@ const CourseDetail = () => {
         {!loading && !response.code && (
           <>
             <Row>
-              <Col span={16} offset={4}>
+              <Col span={18} offset={3}>
                 <Row
                   style={{
                     height: 400,
                   }}
                 >
-                  <Col span={8}>
+                  <Col span={9}>
                     <div height={400} style={{ textAlign: "center" }}>
                       <img
                         style={{ maxWidth: "100%" }}
@@ -68,7 +90,7 @@ const CourseDetail = () => {
 
                   <Col span={1} />
 
-                  <Col span={15}>
+                  <Col span={14}>
                     <Card
                       hoverable
                       style={{ height: 400 }}
@@ -171,6 +193,14 @@ const CourseDetail = () => {
                 </Card>
               </Col>
             </Row>
+
+            {!!isAuth && (
+              <Row>
+                <Col span={10} offset={7}>
+                  <ReviewForm onSave={onSubmitReview} />
+                </Col>
+              </Row>
+            )}
 
             <Divider className="margin-top-divider" orientation="center">
               WHAT STUDENTS SAY ?

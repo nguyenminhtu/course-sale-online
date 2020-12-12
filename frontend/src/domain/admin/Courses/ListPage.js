@@ -1,4 +1,4 @@
-import { Table, notification, Image } from "antd";
+import { Table, notification, Image, Modal } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -74,13 +74,18 @@ const ListPage = () => {
   }, [get, page, query]);
 
   const handleDeleteCourse = useCallback(async () => {
-    await post("/remove_courses", { selectedIds });
-    notification.success({
-      message: "Delete course successfully",
-      placement: "topRight",
+    Modal.confirm({
+      content: "Are you sure want to delete these courses ?",
+      onOk: async () => {
+        await post("/remove_courses", { selectedIds });
+        notification.success({
+          message: "Delete course successfully",
+          placement: "topRight",
+        });
+        setSelectedIds([]);
+        setPage(1);
+      },
     });
-    setSelectedIds([]);
-    setPage(1);
   }, [post, selectedIds]);
 
   return (

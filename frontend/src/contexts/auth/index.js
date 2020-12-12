@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       case "logout":
         localStorage.clear();
         sessionStorage.clear();
-        return { isAuth: false, accessToken: null, user: {} };
+        return { isAuth: false, accessToken: null, user: null };
 
       default: {
         return { ...initialStates };

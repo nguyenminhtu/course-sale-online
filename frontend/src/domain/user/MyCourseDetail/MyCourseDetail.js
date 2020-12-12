@@ -1,10 +1,10 @@
-import { Spin, Row, Col, List, Tag, Button } from "antd";
+import { Spin, Row, Col, List, Tag, PageHeader } from "antd";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import useRequest from "hooks/useRequest";
 import Wrapper from "./MyCourseDetail.styles";
-import { FastBackwardOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const MyCourseDetail = () => {
   const { courseId } = useParams();
@@ -14,6 +14,8 @@ const MyCourseDetail = () => {
     loading,
     response = { course: {}, lessons: [] },
   } = useRequest({});
+
+  const history = useHistory();
 
   const [selectedLesson, setSelectedLesson] = useState({});
 
@@ -80,6 +82,10 @@ const MyCourseDetail = () => {
               {useMemo(
                 () => (
                   <Col span={24}>
+                    <PageHeader
+                      onBack={() => history.replace("/my-courses")}
+                      title={response.course.name}
+                    />
                     <List
                       bordered
                       dataSource={response.lessons}
@@ -104,28 +110,12 @@ const MyCourseDetail = () => {
                     />
                   </Col>
                 ),
-                [response.lessons, selectedLesson._id]
-              )}
-
-              {useMemo(
-                () => (
-                  <Col
-                    span={24}
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: 24,
-                    }}
-                  >
-                    <Button
-                      className="back-button"
-                      icon={<FastBackwardOutlined />}
-                    >
-                      <Link to="/my-courses">Back to my courses</Link>
-                    </Button>
-                  </Col>
-                ),
-                []
+                [
+                  history,
+                  response.course.name,
+                  response.lessons,
+                  selectedLesson._id,
+                ]
               )}
             </Row>
           </Col>

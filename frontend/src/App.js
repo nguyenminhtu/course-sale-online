@@ -6,6 +6,8 @@ import { CartProvider } from "contexts/cart";
 import ActiveAccountPage from "containers/ActiveAccount";
 import SignInPage from "containers/SignIn";
 import SignUpPage from "containers/SignUp";
+import ForgotPasswordPage from "containers/ForgotPassword";
+import ResetPasswordPage from "containers/ResetPassword";
 
 import CourseDetailPage from "domain/user/CourseDetail";
 import MyCoursesPage from "domain/user/MyCourses";
@@ -30,8 +32,20 @@ function App() {
 
           <PublicRoute
             exact
+            path="/forgot-password"
+            component={ForgotPasswordPage}
+          />
+
+          <PublicRoute
+            exact
             path="/active-account"
             component={ActiveAccountPage}
+          />
+
+          <PublicRoute
+            exact
+            path="/reset-password"
+            component={ResetPasswordPage}
           />
 
           <Route path="/admin">

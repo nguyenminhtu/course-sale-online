@@ -1,4 +1,4 @@
-import { Table, Rate, notification } from "antd";
+import { Table, Rate, notification, Modal } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import DeleteButton from "components/DeleteButton";
@@ -59,13 +59,18 @@ const ListPage = () => {
   }, [get, page, query]);
 
   const handleDeleteReview = useCallback(async () => {
-    await post("/remove_reviews", { selectedIds });
-    notification.success({
-      message: "Delete review successfully",
-      placement: "topRight",
+    Modal.confirm({
+      content: "Are you sure want to delete these reviews ?",
+      onOk: async () => {
+        await post("/remove_reviews", { selectedIds });
+        notification.success({
+          message: "Delete review successfully",
+          placement: "topRight",
+        });
+        setSelectedIds([]);
+        setPage(1);
+      },
     });
-    setSelectedIds([]);
-    setPage(1);
   }, [post, selectedIds]);
 
   return (
