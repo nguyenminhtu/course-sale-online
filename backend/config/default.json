@@ -29,5 +29,5 @@
     }
   },
   // "mongodb": "mongodb://tunguyen27:Aa%40123456@ds119374.mlab.com:19374/course_sale_onl"
-  "mongodb": "mongodb://localhost:27017/course_sale_onl"
+  "mongodb": "mongodb://127.0.0.1:27017/course_sale_onl"
 }
