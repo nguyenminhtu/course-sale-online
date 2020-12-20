@@ -9,6 +9,7 @@ module.exports = function (app) {
       useUnifiedTopology: true,
     })
     .catch((err) => {
+      console.log("============== err occur: ", err);
       logger.error(err);
       process.exit(1);
     });
