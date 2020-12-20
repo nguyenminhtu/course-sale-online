@@ -1,12 +1,16 @@
 import styled from "styled-components";
 
 export default styled.div`
-  width: 100vw;
-  height: 100vh;
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
+  min-height: 100vh;
   background-color: #777;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
+  padding: 20px 0;
 
   .ant-page-header {
     padding-top: 0;

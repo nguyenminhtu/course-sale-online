@@ -27,7 +27,7 @@ export default styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
   }
 `;

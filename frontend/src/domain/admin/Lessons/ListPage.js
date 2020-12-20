@@ -1,12 +1,16 @@
-import { Table, notification, Modal } from "antd";
+import { Table, notification, Modal, Input, Select } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import HeaderArea from "components/HeaderArea";
+import DeleteButton from "components/DeleteButton";
 import EditButton from "components/EditButton";
+import NewButton from "components/NewButton";
 import PageHeader from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./ListPage.styles";
+
+const { Search } = Input;
+const { Option } = Select;
 
 const columns = [
   {
@@ -22,14 +26,14 @@ const columns = [
       return record.course && record.course.name;
     },
   },
-  {
-    title: "Is Finish",
-    dataIndex: "isFinish",
-    key: "isFinish",
-    render: (_, record) => {
-      return record.isFinish ? "Finished" : "Not yet";
-    },
-  },
+  // {
+  //   title: "Is Finish",
+  //   dataIndex: "isFinish",
+  //   key: "isFinish",
+  //   render: (_, record) => {
+  //     return record.isFinish ? "Finished" : "Not yet";
+  //   },
+  // },
   {
     title: "Action",
     dataIndex: "action",
@@ -42,16 +46,38 @@ const ListPage = () => {
   const { get, post, loading, response = { data: [], total: 0 } } = useRequest(
     {}
   );
+  const {
+    get: getCourse,
+    loading: loadingCourse,
+    response: responseCourse = { data: [], total: 0 },
+  } = useRequest({});
 
   const [page, setPage] = useState(1);
+  const [courseId, setCourseId] = useState(null);
   const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
+    getCourse("/courses");
+  }, [getCourse]);
+
+  useEffect(() => {
+    if (responseCourse.code || !responseCourse.data.length) {
+      return;
+    }
+
+    setCourseId(responseCourse.data[0]._id);
+  }, [responseCourse.code, responseCourse.data]);
+
+  useEffect(() => {
+    if (!courseId) {
+      return;
+    }
+
     const pageQuery = `limit=${10 * page}&skip=${10 * page - 10}`;
     const searchQuery = query ? `&search=${query}` : "";
-    get(`/lessons?${pageQuery}${searchQuery}`);
-  }, [get, page, query]);
+    get(`/lessons?${pageQuery}${searchQuery}&course=${courseId}`);
+  }, [courseId, get, page, query]);
 
   const handleDeleteLesson = useCallback(async () => {
     Modal.confirm({
@@ -79,15 +105,47 @@ const ListPage = () => {
 
       {useMemo(
         () => (
-          <HeaderArea
-            searchPlaceHolder="Search lesson by name"
-            newPath="/admin/lessons/new"
-            selectedIds={selectedIds}
-            onDelete={handleDeleteLesson}
-            onSearch={(data) => setQuery(data)}
-          />
+          <div className="header-wrapper">
+            <div className="button-area">
+              <NewButton path="/admin/lessons/new" />
+
+              <DeleteButton
+                disabled={!selectedIds.length}
+                onClick={handleDeleteLesson}
+              />
+            </div>
+
+            <div className="search-area">
+              <Select
+                className="filter-course"
+                value={courseId}
+                onChange={(value) => setCourseId(value)}
+              >
+                {!responseCourse.code &&
+                  responseCourse.data.map((course) => (
+                    <Option key={course._id} value={course._id}>
+                      {course.name}
+                    </Option>
+                  ))}
+              </Select>
+
+              <Search
+                className="search-lesson"
+                onSearch={(text) => setQuery(text)}
+                placeholder="Search lesson by name"
+                enterButton="Search"
+                allowClear
+              />
+            </div>
+          </div>
         ),
-        [handleDeleteLesson, selectedIds]
+        [
+          courseId,
+          handleDeleteLesson,
+          responseCourse.code,
+          responseCourse.data,
+          selectedIds.length,
+        ]
       )}
 
       {useMemo(
@@ -120,12 +178,13 @@ const ListPage = () => {
               total: response.total,
               current: page,
             }}
-            loading={loading}
+            loading={loading || loadingCourse}
           />
         ),
         [
           history,
           loading,
+          loadingCourse,
           page,
           response.code,
           response.data,

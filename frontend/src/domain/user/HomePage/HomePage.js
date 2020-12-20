@@ -8,16 +8,42 @@ import Wrapper from "./HomePage.styles";
 
 const { TabPane } = Tabs;
 
+let count = 0;
+
 const HomePage = () => {
   const {
     get,
     loading,
     response = { categories: [], courses: [], hotCourses: [] },
   } = useRequest({});
+  const { get: getRequest, loading: loadingRequest } = useRequest({});
 
-  const { user } = useContext(AuthContext);
+  const { user, requests, dispatch } = useContext(AuthContext);
 
   const [tabKey, setTabKey] = useState("");
+
+  useEffect(() => {
+    if (!user || count === 1) {
+      return;
+    }
+
+    const getAllRequest = async () => {
+      const responseRequest = await getRequest(
+        `/current-requests?userId=${user._id}`
+      );
+
+      dispatch({
+        type: "setRequests",
+        payload: {
+          requests: responseRequest.data.requests,
+          courses: responseRequest.data.courses,
+        },
+      });
+      count += 1;
+    };
+
+    getAllRequest();
+  }, [dispatch, getRequest, user]);
 
   useEffect(() => {
     const query = user
@@ -34,11 +60,16 @@ const HomePage = () => {
     <Wrapper>
       <Spin
         style={{ maxHeight: "100vh", minHeight: "100vh" }}
-        spinning={loading}
+        spinning={loading || loadingRequest}
       >
         <Divider orientation="center">HOT COURSES</Divider>
         {response.code ? null : (
-          <CourseCarousel courses={response.hotCourses} />
+          <CourseCarousel
+            requests={requests
+              .filter((request) => ["waiting"].includes(request.status))
+              .map((request) => request.course)}
+            courses={response.hotCourses}
+          />
         )}
 
         <Divider className="nkh" orientation="center">
@@ -53,7 +84,12 @@ const HomePage = () => {
             ? null
             : response.categories.map((category) => (
                 <TabPane tab={category.name} key={category._id}>
-                  <CourseCarousel courses={response.courses} />
+                  <CourseCarousel
+                    requests={requests
+                      .filter((request) => ["waiting"].includes(request.status))
+                      .map((request) => request.course)}
+                    courses={response.courses}
+                  />
                 </TabPane>
               ))}
         </Tabs>

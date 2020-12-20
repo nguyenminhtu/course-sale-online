@@ -10,7 +10,7 @@ import useRequest from "hooks/useRequest";
 const useEnrollCourse = () => {
   const history = useHistory();
   const { isAuth, user } = useContext(AuthContext);
-  const { cart, dispatch } = useContext(CartContext);
+  const { cart } = useContext(CartContext);
 
   const { post, loading } = useRequest({});
 
@@ -43,13 +43,12 @@ const useEnrollCourse = () => {
       return;
     }
 
-    dispatch({ type: "clearCart" });
     notification.success({
       message: "Buy course successfully",
       placement: "topRight",
     });
-    setShowModalCheckout(false);
-  }, [cart, dispatch, post, user]);
+    window.location.reload();
+  }, [cart, post, user]);
 
   return {
     onEnrollCourse,

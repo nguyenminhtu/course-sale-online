@@ -11,7 +11,7 @@ const sendMail = require("../../sendMail");
 
 module.exports = function (app) {
   app.get("/user-homes", async (req, res) => {
-    const { categoryId, userId } = req.query;
+    const { categoryId } = req.query;
 
     try {
       const categories = await createCategoryModel(app)
@@ -28,15 +28,15 @@ module.exports = function (app) {
         .sort({ purchaseNumber: -1 })
         .limit(4);
 
-      if (userId) {
-        const user = await createUserModel(app).findOne({ _id: userId });
-        courses = courses.filter(
-          (course) => !user.courses.includes(course._id)
-        );
-        hotCourses = hotCourses.filter(
-          (course) => !user.courses.includes(course._id)
-        );
-      }
+      // if (userId) {
+      //   const user = await createUserModel(app).findOne({ _id: userId });
+      //   courses = courses.filter(
+      //     (course) => !user.courses.includes(course._id)
+      //   );
+      //   hotCourses = hotCourses.filter(
+      //     (course) => !user.courses.includes(course._id)
+      //   );
+      // }
 
       res.json({ categories, courses, hotCourses });
     } catch (err) {
@@ -60,16 +60,16 @@ module.exports = function (app) {
   });
 
   app.get("/search-courses", async (req, res) => {
-    const { q, userId } = req.query;
+    const { q } = req.query;
 
     let courses = await createCourseModel(app).find({
       name: { $regex: q, $options: "ig" },
     });
 
-    if (userId) {
-      const user = await createUserModel(app).findOne({ _id: userId });
-      courses = courses.filter((course) => !user.courses.includes(course._id));
-    }
+    // if (userId) {
+    //   const user = await createUserModel(app).findOne({ _id: userId });
+    //   courses = courses.filter((course) => !user.courses.includes(course._id));
+    // }
 
     res.json({ courses });
   });
@@ -231,6 +231,20 @@ module.exports = function (app) {
     }
 
     res.json(response);
+  });
+
+  app.get("/current-requests", async (req, res) => {
+    const { userId } = req.query;
+
+    const requests = await createRequestModel(app).find({ user: userId });
+    const user = await createUserModel(app).findOne({ _id: userId });
+
+    res.json({
+      data: {
+        requests,
+        courses: user.courses,
+      },
+    });
   });
 
   app.service("user-homes");

@@ -12,6 +12,7 @@ const initialStates = {
     : sessionStorage.getItem("user")
     ? JSON.parse(sessionStorage.getItem("user"))
     : null,
+  requests: [],
 };
 
 const AuthContext = createContext();
@@ -24,12 +25,36 @@ export const AuthProvider = ({ children }) => {
           isAuth: true,
           accessToken: action.payload.accessToken,
           user: action.payload.user,
+          requests: [],
         };
 
       case "logout":
         localStorage.clear();
         sessionStorage.clear();
-        return { isAuth: false, accessToken: null, user: null };
+        return { isAuth: false, accessToken: null, user: null, requests: [] };
+
+      case "updateAvatar":
+        const userWithNewAvatar = { ...state.user, avatar: action.payload };
+
+        if (localStorage.getItem("user")) {
+          localStorage.setItem("user", JSON.stringify(userWithNewAvatar));
+        }
+
+        if (sessionStorage.getItem("user")) {
+          sessionStorage.setItem("user", JSON.stringify(userWithNewAvatar));
+        }
+
+        return {
+          ...state,
+          user: userWithNewAvatar,
+        };
+
+      case "setRequests":
+        return {
+          ...state,
+          requests: action.payload.requests,
+          user: { ...state.user, courses: action.payload.courses },
+        };
 
       default: {
         return { ...initialStates };

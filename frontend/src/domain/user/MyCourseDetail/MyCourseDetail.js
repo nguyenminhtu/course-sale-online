@@ -98,11 +98,11 @@ const MyCourseDetail = () => {
                           }`}
                           onClick={() => setSelectedLesson(item)}
                           style={{ cursor: "pointer" }}
-                          actions={[
-                            <Tag color={item.isFinish ? "green" : "gold"}>
-                              {item.isFinish ? "Done" : "Not yet"}
-                            </Tag>,
-                          ]}
+                          // actions={[
+                          //   <Tag color={item.isFinish ? "green" : "gold"}>
+                          //     {item.isFinish ? "Done" : "Not yet"}
+                          //   </Tag>,
+                          // ]}
                         >
                           {item.name}
                         </List.Item>

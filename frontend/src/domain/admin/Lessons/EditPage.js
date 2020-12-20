@@ -104,7 +104,15 @@ const EditPage = () => {
                           icon: <InfoCircleOutlined />,
                         }}
                         rules={[
-                          { required: true, message: "This field is required" },
+                          {
+                            required: true,
+                            message: "This field is required",
+                          },
+                          {
+                            message:
+                              "This field is too long. Max length is 50 character",
+                            max: 50,
+                          },
                         ]}
                       >
                         <Input autoFocus />
@@ -165,7 +173,7 @@ const EditPage = () => {
                         </Form.Item>
                       )}
 
-                      <Form.Item
+                      {/* <Form.Item
                         name="isFinish"
                         label="Is lesson finish"
                         tooltip={{
@@ -180,7 +188,7 @@ const EditPage = () => {
                           <Radio value={true}>Yes</Radio>
                           <Radio value={false}>Not Yet</Radio>
                         </Radio.Group>
-                      </Form.Item>
+                      </Form.Item> */}
 
                       <Form.Item>
                         <Button type="primary" htmlType="submit">

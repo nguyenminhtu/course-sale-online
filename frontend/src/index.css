@@ -28,3 +28,8 @@ ul.ant-dropdown-menu-items {
   margin-bottom: 0 !important;
   padding-left: 16px;
 }
+
+.modal-review-content .ant-modal-confirm-body .ant-modal-confirm-title {
+  display: inline;
+  margin-left: 8px;
+}

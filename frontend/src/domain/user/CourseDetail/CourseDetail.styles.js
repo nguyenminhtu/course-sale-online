@@ -15,6 +15,7 @@ export default styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
+    white-space: pre-line;
   }
 
   .margin-top-divider {

@@ -53,7 +53,15 @@ const NewPage = () => {
                       icon: <InfoCircleOutlined />,
                     }}
                     rules={[
-                      { required: true, message: "This field is required" },
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                      {
+                        message:
+                          "This field is too long. Max length is 50 character",
+                        max: 50,
+                      },
                     ]}
                   >
                     <Input autoFocus />

@@ -30,19 +30,21 @@ export const CartProvider = ({ children }) => {
           };
         }
 
-        const newCart = oldCart.map((cartItem) => {
-          if (cartItem.id === payload._id) {
-            return {
-              ...cartItem,
-              quantity: cartItem.quantity++,
-            };
-          }
-
-          return cartItem;
-        });
+        const newCart = oldCart.filter(
+          (cartItem) => cartItem.id !== payload._id
+        );
 
         return {
-          cart: newCart,
+          cart: [
+            ...newCart,
+            {
+              id: payload._id,
+              cover: payload.cover,
+              name: payload.name,
+              price: payload.price,
+              quantity: 1,
+            },
+          ],
         };
 
       case "removeItem":

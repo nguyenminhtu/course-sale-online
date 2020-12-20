@@ -1,4 +1,4 @@
-import { Card, Carousel, Button, Avatar, Rate } from "antd";
+import { Card, Carousel, Button, Avatar, Rate, Modal } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useRef, memo } from "react";
 
@@ -35,9 +35,37 @@ const ReviewCarousel = ({ reviews = [] }) => {
         {reviews.map((review) => (
           <Card className="review-item" hoverable key={review._id}>
             <Card.Meta
-              avatar={<Avatar src={DefaultAvatar} />}
+              avatar={
+                <Avatar
+                  src={
+                    review.user.avatar
+                      ? `${process.env.REACT_APP_API_URL}${review.user.avatar}`
+                      : DefaultAvatar
+                  }
+                />
+              }
               title={review.user.username}
               description={review.content}
+              onClick={() =>
+                Modal.info({
+                  className: "modal-review-content",
+                  icon: (
+                    <Avatar
+                      src={
+                        review.user.avatar
+                          ? `${process.env.REACT_APP_API_URL}${review.user.avatar}`
+                          : DefaultAvatar
+                      }
+                    />
+                  ),
+                  title: review.user.username,
+                  content: (
+                    <div style={{ whiteSpace: "pre-line" }}>
+                      {review.content}
+                    </div>
+                  ),
+                })
+              }
             />
 
             <Rate disabled allowHalf value={review.rate} />

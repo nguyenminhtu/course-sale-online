@@ -9,6 +9,7 @@ import {
   Statistic,
   Tag,
 } from "antd";
+import { useHistory } from "react-router-dom";
 import { useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
@@ -23,10 +24,16 @@ import Wrapper from "./CourseDetail.styles";
 
 import DefaultCourseImage from "assets/images/default-course.png";
 
+let count = 0;
+
 const CourseDetail = () => {
   const { courseId } = useParams();
-  const { dispatch } = useContext(CartContext);
-  const { isAuth, user } = useContext(AuthContext);
+  const { dispatch: dispatchCart } = useContext(CartContext);
+  const { isAuth, user, requests, dispatch: dispatchAuth } = useContext(
+    AuthContext
+  );
+
+  const history = useHistory();
 
   const {
     get,
@@ -34,7 +41,35 @@ const CourseDetail = () => {
     loading,
     response = { course: {}, reviews: [] },
   } = useRequest({});
+  const { get: getRequest, loading: loadingRequest } = useRequest({});
   const { onEnrollCourse, renderCheckoutModal } = useEnrollCourse();
+
+  console.log(requests);
+
+  useEffect(() => {
+    if (!user || count === 1) {
+      return;
+    }
+
+    const getAllRequest = async () => {
+      const responseRequest = await getRequest(
+        `/current-requests?userId=${user._id}`
+      );
+
+      dispatchAuth({
+        type: "setRequests",
+        payload: {
+          requests: responseRequest.data.requests.filter((request) =>
+            ["waiting"].includes(request.status)
+          ),
+          courses: responseRequest.data.courses,
+        },
+      });
+      count += 1;
+    };
+
+    getAllRequest();
+  }, [dispatchAuth, getRequest, user]);
 
   useEffect(() => {
     get(`/course-detail?courseId=${courseId}`);
@@ -60,7 +95,7 @@ const CourseDetail = () => {
     <Wrapper>
       <Spin
         style={{ maxHeight: "100vh", minHeight: "100vh" }}
-        spinning={loading}
+        spinning={loading || loadingRequest}
       >
         {!loading && response.code && <p>Course not found</p>}
 
@@ -111,37 +146,66 @@ const CourseDetail = () => {
                         ratings)
                       </div>
 
-                      <p>
-                        <Button
-                          size="large"
-                          type="primary"
-                          onClick={() => {
-                            dispatch({
-                              type: "addItem",
-                              payload: response.course,
-                            });
+                      {user &&
+                        !user.courses.includes(courseId) &&
+                        requests
+                          .map((request) => request.course)
+                          .includes(courseId) && (
+                          <p>
+                            <Tag color="green">Waiting for confirm</Tag>
+                          </p>
+                        )}
 
-                            setTimeout(() => {
-                              onEnrollCourse();
-                            }, 300);
-                          }}
-                        >
-                          ENROLL NOW
-                        </Button>
+                      {user && user.courses.includes(courseId) && (
+                        <p>
+                          <Button
+                            size="large"
+                            type="primary"
+                            onClick={() =>
+                              history.push(`/my-course-detail/${courseId}`)
+                            }
+                          >
+                            START LEARN
+                          </Button>
+                        </p>
+                      )}
 
-                        <Button
-                          style={{ marginLeft: 16 }}
-                          type="default"
-                          onClick={() => {
-                            dispatch({
-                              type: "addItem",
-                              payload: response.course,
-                            });
-                          }}
-                        >
-                          ADD TO CART
-                        </Button>
-                      </p>
+                      {!requests
+                        .map((request) => request.course)
+                        .includes(courseId) &&
+                        (!user || !user.courses.includes(courseId)) && (
+                          <p>
+                            <Button
+                              size="large"
+                              type="primary"
+                              onClick={() => {
+                                dispatchCart({
+                                  type: "addItem",
+                                  payload: response.course,
+                                });
+
+                                setTimeout(() => {
+                                  onEnrollCourse();
+                                }, 300);
+                              }}
+                            >
+                              ENROLL NOW
+                            </Button>
+
+                            <Button
+                              style={{ marginLeft: 16 }}
+                              type="default"
+                              onClick={() => {
+                                dispatchCart({
+                                  type: "addItem",
+                                  payload: response.course,
+                                });
+                              }}
+                            >
+                              ADD TO CART
+                            </Button>
+                          </p>
+                        )}
                     </Card>
                   </Col>
                 </Row>

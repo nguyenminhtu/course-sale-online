@@ -21,7 +21,7 @@ import useRequest from "hooks/useRequest";
 import Wrapper from "./UserProfile.styles";
 
 const UserProfile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
   const { get, patch, loading, response = {} } = useRequest({});
 
   const [avatarUrl, setAvatarUrl] = useState(null);
@@ -58,9 +58,9 @@ const UserProfile = () => {
 
       if (typeof data.avatar !== "string") {
         formData = new FormData();
-        formData.append("username", data.username);
-        formData.append("password", data.password);
-        formData.append("gender", data.gender);
+        data.username && formData.append("username", data.username);
+        data.password && formData.append("password", data.password);
+        data.gender && formData.append("gender", data.gender);
         data.dob && formData.append("dob", data.dob.format("DD/MM/YYYY"));
         formData.append("avatar", data.avatar.file);
         formData.append("oldAvatar", response.avatar);
@@ -73,9 +73,11 @@ const UserProfile = () => {
           message: "Update user profile successfully",
           placement: "topRight",
         });
+
+        dispatch({ type: "updateAvatar", payload: patchResponse.avatar });
       }
     },
-    [patch, response.avatar, user._id]
+    [dispatch, patch, response.avatar, user._id]
   );
 
   const handleChange = useCallback((info) => {

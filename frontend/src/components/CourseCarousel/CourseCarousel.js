@@ -8,6 +8,7 @@ import {
 import { useRef, memo, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
+import AuthContext from "contexts/auth";
 import CartContext from "contexts/cart";
 import useEnrollCourse from "hooks/useEnrollCourse";
 import Wrapper from "./CourseCarousel.styles";
@@ -23,7 +24,8 @@ const settings = {
   lazyLoad: true,
 };
 
-const CourseCarousel = ({ courses = [], isBuyed = false }) => {
+const CourseCarousel = ({ courses = [], requests }) => {
+  const { user } = useContext(AuthContext);
   const { dispatch } = useContext(CartContext);
   const history = useHistory();
 
@@ -69,8 +71,19 @@ const CourseCarousel = ({ courses = [], isBuyed = false }) => {
                   />
                 }
                 actions={
-                  isBuyed
-                    ? [<span>Start learn</span>]
+                  user && user.courses.includes(course._id)
+                    ? [
+                        <span
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            history.push(`/my-course-detail/${course._id}`);
+                          }}
+                        >
+                          Start learn
+                        </span>,
+                      ]
+                    : requests.includes(course._id)
+                    ? [<span>Waiting for confirm</span>]
                     : [
                         <ShoppingCartOutlined
                           key="cart"
@@ -96,13 +109,10 @@ const CourseCarousel = ({ courses = [], isBuyed = false }) => {
                   title={course.name}
                   description={(() => (
                     <>
-                      {isBuyed ? null : (
-                        <p style={{ marginBottom: 8 }}>
-                          <Tag color="#001529">
-                            {formatNumber(course.price)}
-                          </Tag>
-                        </p>
-                      )}
+                      <p style={{ marginBottom: 8 }}>
+                        <Tag color="#001529">{formatNumber(course.price)}</Tag>
+                      </p>
+
                       <p>{course.description}</p>
                     </>
                   ))()}

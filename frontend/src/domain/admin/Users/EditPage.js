@@ -94,13 +94,31 @@ const EditPage = () => {
                           icon: <InfoCircleOutlined />,
                         }}
                         rules={[
-                          { required: true, message: "This field is required" },
+                          {
+                            required: true,
+                            message: "This field is required",
+                          },
+                          {
+                            message:
+                              "This field is too long. Max length is 50 character",
+                            max: 50,
+                          },
                         ]}
                       >
                         <Input autoFocus />
                       </Form.Item>
 
-                      <Form.Item label="Password" name="password">
+                      <Form.Item
+                        label="Password"
+                        name="password"
+                        rules={[
+                          {
+                            message:
+                              "This field is too long. Max length is 50 character",
+                            max: 50,
+                          },
+                        ]}
+                      >
                         <Input.Password />
                       </Form.Item>
 
@@ -137,7 +155,17 @@ const EditPage = () => {
                         />
                       </Form.Item>
 
-                      <Form.Item label="Phone" name="phone">
+                      <Form.Item
+                        label="Phone"
+                        name="phone"
+                        rules={[
+                          {
+                            pattern: /^([0-9]{1,20})$/g,
+                            required: true,
+                            message: "This field is not valid",
+                          },
+                        ]}
+                      >
                         <Input />
                       </Form.Item>
 

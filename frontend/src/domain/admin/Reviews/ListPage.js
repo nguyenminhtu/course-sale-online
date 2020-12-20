@@ -1,4 +1,4 @@
-import { Table, Rate, notification, Modal } from "antd";
+import { Table, Rate, notification, Modal, Avatar } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import DeleteButton from "components/DeleteButton";
@@ -6,6 +6,8 @@ import HeaderArea from "components/HeaderArea";
 import PageHeader from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./ListPage.styles";
+
+import DefaultAvatar from "assets/images/default-avatar.png";
 
 const columns = [
   {
@@ -38,7 +40,31 @@ const columns = [
     key: "content",
     width: "50%",
     render: (_, record) => {
-      return <p className="content-column">{record.content}</p>;
+      return (
+        <p
+          onClick={() =>
+            Modal.info({
+              className: "modal-review-content",
+              icon: (
+                <Avatar
+                  src={
+                    record.user.avatar
+                      ? `${process.env.REACT_APP_API_URL}${record.user.avatar}`
+                      : DefaultAvatar
+                  }
+                />
+              ),
+              title: record.user.username,
+              content: (
+                <div style={{ whiteSpace: "pre-line" }}>{record.content}</div>
+              ),
+            })
+          }
+          className="content-column"
+        >
+          {record.content}
+        </p>
+      );
     },
   },
 ];

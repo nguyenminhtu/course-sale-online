@@ -21,7 +21,7 @@ import { ListReview } from "domain/admin/Reviews";
 import AdminHomePage from "domain/admin/HomePage";
 import AdminLayout from "layouts/AdminLayout";
 
-function App() {
+function AdminRoutes() {
   return (
     <Switch>
       <AdminLayout>
@@ -123,4 +123,4 @@ function App() {
   );
 }
 
-export default App;
+export default AdminRoutes;

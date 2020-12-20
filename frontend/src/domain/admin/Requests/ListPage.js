@@ -221,7 +221,23 @@ const ListPage = () => {
                     key: item._id,
                     user: item.user && item.user.username,
                     course: item.course && item.course.name,
-                    note: <p className="note-column">{item.note}</p>,
+                    note: (
+                      <p
+                        onClick={() =>
+                          Modal.info({
+                            title: "Request note",
+                            content: (
+                              <div style={{ whiteSpace: "pre-line" }}>
+                                {item.note}
+                              </div>
+                            ),
+                          })
+                        }
+                        className="note-column"
+                      >
+                        {item.note}
+                      </p>
+                    ),
                     status:
                       item.status === "waiting" ? (
                         <Tag color="gold">{item.status}</Tag>

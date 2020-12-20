@@ -1,14 +1,18 @@
-import { Table, notification, Image, Modal } from "antd";
+import { Table, notification, Image, Modal, Input, Select } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import DeleteButton from "components/DeleteButton";
 import EditButton from "components/EditButton";
-import HeaderArea from "components/HeaderArea";
+import NewButton from "components/NewButton";
 import PageHeader from "components/PageHeader";
 import useRequest from "hooks/useRequest";
 import Wrapper from "./ListPage.styles";
 
 import DefaultCourseImage from "assets/images/default-course.png";
+
+const { Search } = Input;
+const { Option } = Select;
 
 const columns = [
   {
@@ -59,19 +63,43 @@ const columns = [
 
 const ListPage = () => {
   const history = useHistory();
+
   const { get, post, loading, response = { data: [], total: 0 } } = useRequest(
     {}
   );
+  const {
+    get: getCategory,
+    loading: loadingCategory,
+    response: responseCategory = { data: [], total: 0 },
+  } = useRequest({});
 
   const [page, setPage] = useState(1);
+  const [categoryId, setCategoryId] = useState(null);
   const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
+    getCategory("/categories");
+  }, [getCategory]);
+
+  useEffect(() => {
+    if (responseCategory.code || !responseCategory.data.length) {
+      return;
+    }
+
+    setCategoryId(responseCategory.data[0]._id);
+  }, [responseCategory.code, responseCategory.data]);
+
+  useEffect(() => {
+    if (!categoryId) {
+      return;
+    }
+
     const pageQuery = `limit=${10 * page}&skip=${10 * page - 10}`;
     const searchQuery = query ? `&search=${query}` : "";
-    get(`/courses?${pageQuery}${searchQuery}`);
-  }, [get, page, query]);
+
+    get(`/courses?${pageQuery}${searchQuery}&category=${categoryId}`);
+  }, [categoryId, get, page, query]);
 
   const handleDeleteCourse = useCallback(async () => {
     Modal.confirm({
@@ -99,15 +127,47 @@ const ListPage = () => {
 
       {useMemo(
         () => (
-          <HeaderArea
-            newPath="/admin/courses/new"
-            searchPlaceHolder="Search course by name"
-            selectedIds={selectedIds}
-            onDelete={handleDeleteCourse}
-            onSearch={(text) => setQuery(text)}
-          />
+          <div className="header-wrapper">
+            <div className="button-area">
+              <NewButton path="/admin/courses/new" />
+
+              <DeleteButton
+                disabled={!selectedIds.length}
+                onClick={handleDeleteCourse}
+              />
+            </div>
+
+            <div className="search-area">
+              <Select
+                className="filter-category"
+                value={categoryId}
+                onChange={(value) => setCategoryId(value)}
+              >
+                {!responseCategory.code &&
+                  responseCategory.data.map((category) => (
+                    <Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Option>
+                  ))}
+              </Select>
+
+              <Search
+                className="search-course"
+                onSearch={(text) => setQuery(text)}
+                placeholder="Search course by name"
+                enterButton="Search"
+                allowClear
+              />
+            </div>
+          </div>
         ),
-        [handleDeleteCourse, selectedIds]
+        [
+          categoryId,
+          handleDeleteCourse,
+          responseCategory.code,
+          responseCategory.data,
+          selectedIds.length,
+        ]
       )}
 
       {useMemo(
@@ -144,12 +204,13 @@ const ListPage = () => {
               total: response.total,
               current: page,
             }}
-            loading={loading}
+            loading={loading || loadingCategory}
           />
         ),
         [
           history,
           loading,
+          loadingCategory,
           page,
           response.code,
           response.data,

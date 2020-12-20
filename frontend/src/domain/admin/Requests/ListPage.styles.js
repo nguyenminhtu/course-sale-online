@@ -14,6 +14,11 @@ export default styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 
   .header-wrapper {

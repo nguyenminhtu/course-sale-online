@@ -95,7 +95,11 @@ const NewPage = () => {
                       icon: <InfoCircleOutlined />,
                     }}
                     rules={[
-                      { required: true, message: "This field is required" },
+                      {
+                        required: true,
+                        max: 50,
+                        message: "This field is not valid",
+                      },
                     ]}
                   >
                     <Input />
@@ -109,7 +113,11 @@ const NewPage = () => {
                       icon: <InfoCircleOutlined />,
                     }}
                     rules={[
-                      { required: true, message: "This field is required" },
+                      {
+                        pattern: /^([0-9]{1,10})$/g,
+                        required: true,
+                        message: "This field is not valid",
+                      },
                     ]}
                   >
                     <Input />

@@ -15,6 +15,11 @@ exports.Courses = class Courses extends (
         return;
       }
 
+      if (key === "category") {
+        queryParams[key] = params.query[key];
+        return;
+      }
+
       queryParams[`$${key}`] = params.query[key];
     });
     return super.find({ query: queryParams });

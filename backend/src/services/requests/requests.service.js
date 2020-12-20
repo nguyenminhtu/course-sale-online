@@ -2,6 +2,7 @@
 const { Requests } = require("./requests.class");
 const createRequestModel = require("../../models/requests.model");
 const createUserModel = require("../../models/users.model");
+const createCourseModel = require("../../models/courses.model");
 const hooks = require("./requests.hooks");
 
 module.exports = function (app) {
@@ -45,12 +46,25 @@ module.exports = function (app) {
             _id: requestList[i].user,
           });
 
+          const course = await createCourseModel(app).findOne({
+            _id: requestList[i].course,
+          });
+
+          const newPurchaseNumber = (course.purchaseNumber += 1);
+
           const newCourseList = [...user.courses, requestList[i].course];
 
           await createUserModel(app)
             .findOneAndUpdate(
               { _id: requestList[i].user },
               { courses: newCourseList }
+            )
+            .exec();
+
+          await createCourseModel(app)
+            .findOneAndUpdate(
+              { _id: requestList[i].course },
+              { purchaseNumber: newPurchaseNumber }
             )
             .exec();
         } catch (err) {

@@ -16,6 +16,11 @@ exports.Lessons = class Lessons extends (
         return;
       }
 
+      if (key === "course") {
+        queryParams[key] = params.query[key];
+        return;
+      }
+
       queryParams[`$${key}`] = params.query[key];
     });
 

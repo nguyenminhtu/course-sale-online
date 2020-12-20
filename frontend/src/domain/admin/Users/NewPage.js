@@ -64,7 +64,15 @@ const NewPage = () => {
                       icon: <InfoCircleOutlined />,
                     }}
                     rules={[
-                      { required: true, message: "This field is required" },
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                      {
+                        message:
+                          "This field is too long. Max length is 50 character",
+                        max: 50,
+                      },
                     ]}
                   >
                     <Input autoFocus />
@@ -81,6 +89,11 @@ const NewPage = () => {
                       {
                         required: true,
                         message: "This field is required",
+                      },
+                      {
+                        message:
+                          "This field is too long. Max length is 50 character",
+                        max: 50,
                       },
                     ]}
                   >
@@ -120,7 +133,17 @@ const NewPage = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item label="Phone" name="phone">
+                  <Form.Item
+                    label="Phone"
+                    name="phone"
+                    rules={[
+                      {
+                        pattern: /^([0-9]{1,20})$/g,
+                        required: true,
+                        message: "This field is not valid",
+                      },
+                    ]}
+                  >
                     <Input />
                   </Form.Item>
 
