@@ -41,6 +41,8 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
+    networks:
+      - internal
     volumes:
       - mongodb_data_container:/data/db
     restart: unless-stopped
