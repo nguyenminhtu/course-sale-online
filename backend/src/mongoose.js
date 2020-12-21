@@ -4,9 +4,9 @@ const logger = require("./logger");
 module.exports = function (app) {
   mongoose
     .connect(app.get("mongodb"), {
-      useCreateIndex: true,
+      // useCreateIndex: true,
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // useUnifiedTopology: true,
     })
     .catch((err) => {
       console.log("============== err occur: ", err);
